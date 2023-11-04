@@ -1,2 +1,3 @@
-# set
-Self implementation of a Set
+# Cachable
+
+Convert Closures and objects to strings.
