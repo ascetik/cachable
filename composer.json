@@ -1,0 +1,28 @@
+{
+    "name": "ascetik/cachable",
+    "description": "Convert Closures and objects into stringd",
+    "type": "library",
+    "require": {
+        "opis/closure": "^3.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.4"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Ascetik\\Cachable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ascetik\\Cachable\\Test\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ascetik",
+            "email": "ascetik@free.fr"
+        }
+    ]
+}
