@@ -1,10 +1,27 @@
 <?php
 
+/**
+ * This is part of the ascetik/cacheable package
+ *
+ * @package    Cacheable
+ * @category   Value Object Type
+ * @license    https://opensource.org/license/mit/  MIT License
+ * @copyright  Copyright (c) 2023, Vidda
+ * @author     Vidda <vidda@ascetik.fr>
+ */
+
+declare(strict_types=1);
+
 namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Types\CacheableCall;
 use InvalidArgumentException;
 
+/**
+ * Handle and serialize a class/instance method
+ *
+ * @version 1.0.0
+ */
 class CacheableMethod extends CacheableCall
 {
     private function __construct(
