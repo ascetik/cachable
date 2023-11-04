@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Ascetik\RouteManager\Tests;
+namespace Ascetik\Cacheable\Test;
 
 use Ascetik\Cacheable\Callable\CacheableClosure;
+use Ascetik\Cacheable\Callable\CacheableMethod;
+use Ascetik\Cacheable\Test\Mocks\ControllerMock;
 use PHPUnit\Framework\TestCase;
 
 class CacheableCallsTest extends TestCase
@@ -38,19 +40,17 @@ class CacheableCallsTest extends TestCase
         $this->assertEquals('Hello John, you are 18 years old', $result2);
     }
 
-    // public function testShouldSerializeAClassMethod()
-    // {
-    //     $string = 'test page';
-    //     $mock = new ControllerMock($string);
-    //     $endPoint = MethodEndPoint::build([$mock, 'action']);
-    //     $serial = serialize($endPoint);
-    //     // echo $serial.PHP_EOL;
-    //     $this->assertIsString($serial);
-    //     $deserial = unserialize($serial);
-    //     // var_dump($deserial->controller);
-    //     $this->assertInstanceOf(ControllerMock::class, $deserial->subject);
-    //     $this->assertSame($string, $deserial->apply());
-    // }
+    public function testShouldSerializeAClassMethod()
+    {
+        $string = 'test page';
+        $mock = new ControllerMock($string);
+        $endPoint = CacheableMethod::build([$mock, 'action']);
+        $serial = serialize($endPoint);
+        $this->assertIsString($serial);
+        $deserial = unserialize($serial);
+        $this->assertInstanceOf(ControllerMock::class, $deserial->subject);
+        $this->assertSame($string, $deserial->run());
+    }
 
     // public function testShouldBeAbleToSerializeAnInvokableObject()
     // {
