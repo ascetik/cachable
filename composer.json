@@ -1,6 +1,6 @@
 {
-    "name": "ascetik/cachable",
-    "description": "Convert Closures and objects into stringd",
+    "name": "ascetik/cacheable",
+    "description": "Convert Closures and objects into strings",
     "type": "library",
     "require": {
         "opis/closure": "^3.6"
@@ -11,12 +11,12 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Ascetik\\Cachable\\": "src/"
+            "Ascetik\\Cacheable\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Ascetik\\Cachable\\Test\\": "tests/"
+            "Ascetik\\Cacheable\\Test\\": "tests/"
         }
     },
     "authors": [
