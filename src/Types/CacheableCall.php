@@ -4,7 +4,7 @@
  * This is part of the ascetik/cacheable package
  *
  * @package    Cacheable
- * @category   Type
+ * @category   Value Object Type
  * @license    https://opensource.org/license/mit/  MIT License
  * @copyright  Copyright (c) 2023, Vidda
  * @author     Vidda <vidda@ascetik.fr>
@@ -17,7 +17,7 @@ namespace Ascetik\Cacheable\Types;
 use Serializable;
 
 /**
- * Main abstraction to handle callables
+ * Main abstraction to handle callable serialization
  *
  * @abstract
  * @version 1.0.0
