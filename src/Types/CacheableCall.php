@@ -27,7 +27,7 @@ use Serializable;
  * @abstract
  * @version 1.0.0
  */
-abstract class CacheableCall implements Cacheable, Serializable
+abstract class CacheableCall implements Cacheable
 {
     public function run(array $parameters = []): mixed
     {
