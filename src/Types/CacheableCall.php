@@ -34,16 +34,6 @@ abstract class CacheableCall implements Cacheable, Serializable
         return call_user_func_array($this->callable(), $parameters);
     }
 
-    public function serialize()
-    {
-        return $this->encode();
-    }
-
-    public function unserialize(string $data)
-    {
-        $this->decode($data);
-    }
-
     abstract public function callable(): callable;
 
     final public static function create(callable $callable): CacheableCall
