@@ -15,7 +15,11 @@ declare(strict_types=1);
 namespace Ascetik\Cacheable\Types;
 
 /**
- * Undocumented interface
+ * Describe the way to
+ * serialize / unserialize
+ * non-serializable data
+ *
+ * @version 1.0.0
  */
 interface Cacheable
 {

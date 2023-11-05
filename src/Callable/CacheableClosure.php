@@ -21,6 +21,7 @@ use Opis\Closure\SerializableClosure;
 /**
  * Handle and serialize a Closure
  *
+ * @uses opis/closure Package
  * @version 1.0.0
  */
 class CacheableClosure extends CacheableCall
