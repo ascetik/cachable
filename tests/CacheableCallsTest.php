@@ -2,9 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Ascetik\RouteManager\Tests;
+namespace Ascetik\Cacheable\Test;
 
 use Ascetik\Cacheable\Callable\CacheableClosure;
+use Ascetik\Cacheable\Callable\CacheableInvokable;
+use Ascetik\Cacheable\Callable\CacheableMethod;
+use Ascetik\Cacheable\Test\Mocks\ControllerMock;
+use Ascetik\Cacheable\Test\Mocks\InvokableMock;
+use Ascetik\Cacheable\Types\CacheableCall;
 use PHPUnit\Framework\TestCase;
 
 class CacheableCallsTest extends TestCase
@@ -38,35 +43,33 @@ class CacheableCallsTest extends TestCase
         $this->assertEquals('Hello John, you are 18 years old', $result2);
     }
 
-    // public function testShouldSerializeAClassMethod()
-    // {
-    //     $string = 'test page';
-    //     $mock = new ControllerMock($string);
-    //     $endPoint = MethodEndPoint::build([$mock, 'action']);
-    //     $serial = serialize($endPoint);
-    //     // echo $serial.PHP_EOL;
-    //     $this->assertIsString($serial);
-    //     $deserial = unserialize($serial);
-    //     // var_dump($deserial->controller);
-    //     $this->assertInstanceOf(ControllerMock::class, $deserial->subject);
-    //     $this->assertSame($string, $deserial->apply());
-    // }
+    public function testShouldSerializeAClassMethod()
+    {
+        $string = 'test page';
+        $mock = new ControllerMock($string);
+        $endPoint = CacheableMethod::build([$mock, 'action']);
+        $serial = serialize($endPoint);
+        $this->assertIsString($serial);
+        $deserial = unserialize($serial);
+        $this->assertInstanceOf(ControllerMock::class, $deserial->subject);
+        $this->assertSame($string, $deserial->run());
+    }
 
-    // public function testShouldBeAbleToSerializeAnInvokableObject()
-    // {
-    //     $subject = new InvokableMock();
-    //     $endPoint = new InvokableEndPoint($subject);
-    //     $serial = serialize($endPoint);
-    //     $this->assertIsString($serial);
-    //     $deserial = unserialize($serial);
-    //     $this->assertInstanceOf(InvokableMock::class, $deserial->invokable);
-    //     $this->assertSame('Hello John', $deserial->apply(['John']));
-    // }
+    public function testShouldBeAbleToSerializeAnInvokableObject()
+    {
+        $subject = new InvokableMock();
+        $endPoint = new CacheableInvokable($subject);
+        $serial = serialize($endPoint);
+        $this->assertIsString($serial);
+        $deserial = unserialize($serial);
+        $this->assertInstanceOf(InvokableMock::class, $deserial->invokable);
+        $this->assertSame('Hello John', $deserial->run(['John']));
+    }
 
-    // public function testEndPointFactoryMethod()
-    // {
-    //     $this->assertInstanceOf(ClosureEndPoint::class, EndPoint::trace(fn () => 'Hello'));
-    //     $this->assertInstanceOf(MethodEndPoint::class, EndPoint::trace([new ControllerMock('title'), 'action']));
-    //     $this->assertInstanceOf(InvokableEndPoint::class, EndPoint::trace(new InvokableMock()));
-    // }
+    public function testEndPointFactoryMethod()
+    {
+        $this->assertInstanceOf(CacheableClosure::class, CacheableCall::create(fn () => 'Hello'));
+        $this->assertInstanceOf(CacheableMethod::class, CacheableCall::create([new ControllerMock('title'), 'action']));
+        $this->assertInstanceOf(CacheableInvokable::class, CacheableCall::create(new InvokableMock()));
+    }
 }

@@ -14,6 +14,11 @@ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Types;
 
+use Ascetik\Cacheable\Callable\CacheableClosure;
+use Ascetik\Cacheable\Callable\CacheableInvokable;
+use Ascetik\Cacheable\Callable\CacheableMethod;
+use Closure;
+use InvalidArgumentException;
 use Serializable;
 
 /**
@@ -38,4 +43,21 @@ abstract class CacheableCall implements Cacheable, Serializable
     {
         $this->decode($data);
     }
+
+    final public static function create(callable $callable): CacheableCall
+    {
+        if (is_array($callable)) {
+            return CacheableMethod::build($callable);
+        }
+
+        if ($callable instanceof Closure) {
+            return new CacheableClosure($callable);
+        }
+
+        if (is_object($callable) && method_exists($callable, '__invoke')) {
+            return new CacheableInvokable($callable);
+        }
+        throw new InvalidArgumentException('No use case matching with given parameters');
+    }
+
 }
