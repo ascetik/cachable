@@ -34,11 +34,8 @@ class CacheableInvokable extends CacheableCall
         return $this->invokable;
     }
 
-    public function encode(): string
+    public function serialize(): string
     {
-        if ($this->invokable instanceof JsonSerializable) {
-            return json_encode($this->invokable);
-        }
         /**
          * Dans le cas d'un objet qui n'est pas Serializable
          * il faudrait scanner l'objet pour arriver à serializer le tout
@@ -47,11 +44,8 @@ class CacheableInvokable extends CacheableCall
         return serialize($this->invokable);
     }
 
-    public function decode(string $data): void
+    public function unserialize(string $data): void
     {
-        if ($json = json_decode($data)) {
-            $this->invokable = $json;
-        } else {
             /**
              * ici aussi il faudrait deserializer notre objet data
              * Si ce n'est pas un Serializable, il faut tout de meme arriver à
@@ -67,6 +61,5 @@ class CacheableInvokable extends CacheableCall
              * ReflectionClass pour retrouver tout xce qu'il lui faut.
              */
             $this->invokable = unserialize($data);
-        }
     }
 }

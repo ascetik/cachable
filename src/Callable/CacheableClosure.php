@@ -35,13 +35,13 @@ class CacheableClosure extends CacheableCall
         return $this->callable;
     }
 
-    public function encode(): string
+    public function serialize(): string
     {
         $wrapper = new SerializableClosure($this->callable);
         return serialize($wrapper);
     }
 
-    public function decode(string $data): void
+    public function unserialize(string $data): void
     {
         $deserial = unserialize($data);
         $this->callable = $deserial->getClosure();

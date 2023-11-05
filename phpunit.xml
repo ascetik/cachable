@@ -9,7 +9,7 @@
     <testsuites>
         <testsuite name="Storage Tests">
             <file>tests/CacheableCallsTest.php</file>
-            <file>tests/CacheablePropertyTest.php</file>
+            <file>tests/CacheableScalarPropertyTest.php</file>
             <file>tests/CacheableInstanceTest.php</file>
         </testsuite>
     </testsuites>

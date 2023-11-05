@@ -27,21 +27,11 @@ use Serializable;
  * @abstract
  * @version 1.0.0
  */
-abstract class CacheableCall implements Cacheable, Serializable
+abstract class CacheableCall implements Cacheable
 {
     public function run(array $parameters = []): mixed
     {
         return call_user_func_array($this->callable(), $parameters);
-    }
-
-    public function serialize()
-    {
-        return $this->encode();
-    }
-
-    public function unserialize(string $data)
-    {
-        $this->decode($data);
     }
 
     abstract public function callable(): callable;

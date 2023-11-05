@@ -35,12 +35,12 @@ class CacheableMethod extends CacheableCall
         return [$this->subject, $this->method];
     }
 
-    public function encode(): string
+    public function serialize(): string
     {
         return serialize($this->callable());
     }
 
-    public function decode(string $data): void
+    public function unserialize(string $data): void
     {
         [$this->subject, $this->method] = unserialize($data);
     }
