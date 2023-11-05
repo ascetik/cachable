@@ -44,6 +44,8 @@ abstract class CacheableCall implements Cacheable, Serializable
         $this->decode($data);
     }
 
+    abstract public function callable(): callable;
+
     final public static function create(callable $callable): CacheableCall
     {
         if (is_array($callable)) {
@@ -59,5 +61,4 @@ abstract class CacheableCall implements Cacheable, Serializable
         }
         throw new InvalidArgumentException('No use case matching with given parameters');
     }
-
 }
