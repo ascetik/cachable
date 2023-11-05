@@ -21,10 +21,6 @@ namespace Ascetik\Cacheable\Types;
  *
  * @version 1.0.0
  */
-interface Cacheable
+interface Cacheable extends \Serializable
 {
-    // public function run(array $parameters = []): mixed;
-    // public function callable(): callable;
-    public function encode():string;
-    public function decode(string $serial):void;
 }
