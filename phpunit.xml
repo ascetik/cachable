@@ -11,7 +11,7 @@
             <file>tests/CacheableCallsTest.php</file>
             <file>tests/CacheableCustomPropertyTest.php</file>
             <file>tests/CacheableCallablePropertyTest.php</file>
-            <file>tests/CacheableObjectReferenceRegistryTest.php</file>
+            <file>tests/CacheablePropertyRegistryTest.php</file>
             <file>tests/CacheableInstanceTest.php</file>
         </testsuite>
     </testsuites>

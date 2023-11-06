@@ -26,7 +26,7 @@ use Ds\Set;
  * @uses Ds\Set
  * @version 1.0.0
  */
-class CacheableObjectReferenceRegistry implements Cacheable
+class CacheablepropertyRegistry implements Cacheable
 {
     /**
      * Reference container
