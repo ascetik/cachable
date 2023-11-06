@@ -37,9 +37,6 @@ abstract class CacheableProperty implements CacheableObjectReference
         return $this->name;
     }
 
-    abstract public function getType(): string;
-    abstract public function getValue(): mixed;
-
     public static function create(string $name, mixed $value): CacheableObjectReference
     {
         return match (true) {
