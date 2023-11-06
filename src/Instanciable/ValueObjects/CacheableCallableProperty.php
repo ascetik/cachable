@@ -31,11 +31,6 @@ class CacheableCallableProperty extends CacheableProperty
         parent::__construct($name);
     }
 
-    public function getType(): string
-    {
-        return Closure::class;
-    }
-
     public function getValue(): Closure
     {
         return $this->call;

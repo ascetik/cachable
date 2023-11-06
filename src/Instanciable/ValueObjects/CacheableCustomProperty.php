@@ -16,6 +16,11 @@ namespace Ascetik\Cacheable\Instanciable\ValueObjects;
 
 use Ascetik\Cacheable\Types\CacheableProperty;
 
+/**
+ * Handle custom serialization
+ *
+ * @version 1.0.0
+ */
 class CacheableCustomProperty extends CacheableProperty
 {
     public function __construct(
@@ -23,11 +28,6 @@ class CacheableCustomProperty extends CacheableProperty
         private mixed $content
     ) {
         parent::__construct($name);
-    }
-
-    public function getType(): string
-    {
-        return gettype($this->name);
     }
 
     public function getValue(): mixed
