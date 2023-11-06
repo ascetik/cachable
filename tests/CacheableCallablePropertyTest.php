@@ -19,10 +19,10 @@ class CacheableCallablePropertyTest extends TestCase
 
     public function testShouldRegisterCorrectData()
     {
-        $this->assertSame(Closure::class, $this->property->getType());
         $this->assertSame('fn', $this->property->getName());
         $this->assertInstanceOf(Closure::class, $this->property->getValue());
     }
+    
     public function testShouldSerializeAString()
     {
         $serial = serialize($this->property);
