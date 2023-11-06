@@ -4,7 +4,7 @@
  * This is part of the ascetik/cacheable package
  *
  * @package    Cacheable
- * @category   Cacheable instance property
+ * @category   Cacheable property
  * @license    https://opensource.org/license/mit/  MIT License
  * @copyright  Copyright (c) 2023, Vidda
  * @author     Vidda <vidda@ascetik.fr>
