@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Types;
 
+use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCallableProperty;
 use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCustomProperty;
 use Closure;
@@ -25,7 +26,7 @@ use Closure;
  * @abstract
  * @version 1.0.0
  */
-abstract class CacheableProperty implements Cacheable
+abstract class CacheableProperty implements CacheableObjectReference
 {
     public function __construct(protected string $name)
     {
@@ -39,10 +40,12 @@ abstract class CacheableProperty implements Cacheable
     abstract public function getType(): string;
     abstract public function getValue(): mixed;
 
-    public static function create(string $name, mixed $value): static
+    public static function create(string $name, mixed $value): CacheableObjectReference
     {
-        return $value instanceof Closure
-            ? new CacheableCallableProperty($name, $value)
-            : new CacheableCustomProperty($name, $value);
+        return match (true) {
+            $value instanceof Closure => new CacheableCallableProperty($name, $value),
+            is_object($value) => new CacheableInstance($value),
+            default => new CacheableCustomProperty($name, $value)
+        };
     }
 }
