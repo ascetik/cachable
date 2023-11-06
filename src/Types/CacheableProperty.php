@@ -17,6 +17,7 @@ namespace Ascetik\Cacheable\Types;
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCallableProperty;
 use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCustomProperty;
+use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableObjectProperty;
 use Closure;
 
 /**
@@ -43,7 +44,7 @@ abstract class CacheableProperty implements Cacheable
     {
         return match (true) {
             $value instanceof Closure => new CacheableCallableProperty($name, $value),
-            is_object($value) => new CacheableInstance($value),
+            is_object($value) => new CacheableObjectProperty($name, $value),
             default => new CacheableCustomProperty($name, $value)
         };
     }

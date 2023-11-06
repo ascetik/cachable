@@ -38,7 +38,6 @@ class CacheableCallableProperty extends CacheableProperty
 
     public function serialize(): string
     {
-        echo 'serializing...'.PHP_EOL;
         $wrapper = new SerializableClosure($this->call);
         return serialize([$this->name, $wrapper]);
     }
