@@ -26,7 +26,7 @@ use Closure;
  * @abstract
  * @version 1.0.0
  */
-abstract class CacheableProperty implements CacheableObjectReference
+abstract class CacheableProperty implements Cacheable
 {
     public function __construct(protected string $name)
     {
@@ -37,7 +37,9 @@ abstract class CacheableProperty implements CacheableObjectReference
         return $this->name;
     }
 
-    public static function create(string $name, mixed $value): CacheableObjectReference
+    abstract public function getValue(): mixed;
+
+    public static function create(string $name, mixed $value): CacheableProperty
     {
         return match (true) {
             $value instanceof Closure => new CacheableCallableProperty($name, $value),

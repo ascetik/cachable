@@ -16,6 +16,7 @@ namespace Ascetik\Cacheable\Instanciable\DTO;
 
 use Ascetik\Cacheable\Types\Cacheable;
 use Ascetik\Cacheable\Types\CacheableObjectReference;
+use Ascetik\Cacheable\Types\CacheableProperty;
 use Ds\Set;
 
 /**
@@ -30,7 +31,7 @@ class CacheableObjectReferenceRegistry implements Cacheable
     /**
      * Reference container
      *
-     * @var Set<CacheableObjectReference>
+     * @var Set<CacheableProperty>
      */
     private Set $container;
 
@@ -44,24 +45,27 @@ class CacheableObjectReferenceRegistry implements Cacheable
         $this->container->allocate($amount);
     }
 
+    /**
+     * @return Set<CacheableProperty>
+     */
     public function list(): Set
     {
         return $this->container->copy();
     }
 
-    public function push(CacheableObjectReference ...$reference)
+    public function push(CacheableProperty ...$reference)
     {
         $this->container->add(...$reference);
     }
 
     public function serialize(): string
     {
-        return serialize($this->container->toArray());
+        return serialize($this->container);
     }
 
     public function unserialize(string $data): void
     {
-        /** @var CacheableObjectReference[] $references */
+        /** @var CacheableProperty[] $references */
         $references = unserialize($data);
         $this->container = new Set($references);
     }

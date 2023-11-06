@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Ascetik\Cacheable\Instanciable;
 
 use Ascetik\Cacheable\Instanciable\DTO\CacheableObjectReferenceRegistry;
-use Ascetik\Cacheable\Types\CacheableObjectReference;
+use Ascetik\Cacheable\Types\Cacheable;
 use Ascetik\Cacheable\Types\CacheableProperty;
 use Ds\Set;
 use ReflectionClass;
 
-class CacheableInstance implements CacheableObjectReference
+class CacheableInstance implements Cacheable
 {
 
     private CacheableObjectReferenceRegistry $references;
@@ -64,7 +64,7 @@ class CacheableInstance implements CacheableObjectReference
     {
         /**
          * @var mixed $subject
-         * @var CacheableObjectReference[] $props
+         * @var CacheableProperty[] $props
          */
         [$subject, $props] = unserialize($serial);
         // var_dump(class_exists($subject));
@@ -74,7 +74,7 @@ class CacheableInstance implements CacheableObjectReference
         $this->references = $props;
         // echo 'subject : '. $subject . PHP_EOL;
         // var_dump('props', $props);
-        /** @var CacheableObjectReference $cacheable */
+        /** @var CacheableProperty $cacheable */
         foreach ($this->references->list() as $cacheable) {
             // if(in_array($cacheable))
             $propName = $cacheable->getName();
