@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ascetik\Cacheable\Test;
 
 use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCustomProperty;
@@ -7,35 +9,32 @@ use PHPUnit\Framework\TestCase;
 
 class CacheableCustomPropertyTest extends TestCase
 {
+    private CacheableCustomProperty $property;
+
+    protected function setUp(): void
+    {
+        $this->property = new CacheableCustomProperty('name','John');
+        
+    }
     public function testShouldRegisterCorrectData()
     {
-        $property = new CacheableCustomProperty('name','John');
-        $this->assertSame('string', $property->getType());
-        $this->assertSame('name', $property->getName());
-        $this->assertSame('John', $property->getValue());
+        $this->assertSame('string', $this->property->getType());
+        $this->assertSame('name', $this->property->getName());
+        $this->assertSame('John', $this->property->getValue());
        
     }
     public function testShouldSerializeAString()
     {
-        $property = new CacheableCustomProperty('name','John');
-        $serial = serialize($property);
+        $serial = serialize($this->property);
         $this->assertIsString($serial);
-        // $serial = $property->encode();
-        // $expected = [
-        //     'property' => 'name',
-        //     'content'=>'John'
-        // ];
-        // $this->assertSame(json_encode($expected), $property->encode());
     }
 
     public function testShouldBeAbleToDeserializeAString()
     {
-        $property = new CacheableCustomProperty('name','John');
-        $serial = serialize($property);
-        echo $serial.PHP_EOL;
+        $serial = serialize($this->property);
         $extract = unserialize($serial);
         $this->assertInstanceOf(CacheableCustomProperty::class,$extract);
-        $this->assertSame('name', $property->getName());
-        $this->assertSame('John', $property->getValue());
+        $this->assertSame('name', $this->property->getName());
+        $this->assertSame('John', $this->property->getValue());
     }
 }
