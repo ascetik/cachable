@@ -11,16 +11,35 @@ use PHPUnit\Framework\TestCase;
 
 class CacheableInstanceTest extends TestCase
 {
-    public function testEncoding()
+    public function testInstanciationOfCacheableInstance()
     {
         $wrapper = new CacheableInstance(new ControllerMock('home page'));
+        $this->assertSame(ControllerMock::class, $wrapper->getName());
         $data = $wrapper->getProperties();
-        // var_dump($data);
-        // $this->assertTrue(true);
+        $this->assertCount(1, $data);
         /** @var CacheableCustomProperty $first */
         $first = $data->first();
         $this->assertInstanceOf(CacheableCustomProperty::class, $first);
         $this->assertSame($first->getName(), 'title');
         $this->assertSame('home page', $first->getValue());
+    }
+
+    public function testSerializationOfACacheableInstance()
+    {
+        $wrapper = new CacheableInstance(new ControllerMock('home page'));
+        $serial = serialize($wrapper);
+        $this->assertIsString($serial);
+    }
+
+    public function testUnserializationOfACacheableInstance()
+    {
+        $wrapper = new CacheableInstance(new ControllerMock('home page'));
+        $serial = serialize($wrapper);
+        /** @var CacheableInstance $extract */
+        $extract = unserialize($serial);
+        $this->assertInstanceOf(CacheableInstance::class, $extract);
+        $subject = $extract->getInstance();
+        $this->assertInstanceOf(ControllerMock::class, $subject);
+        $this->assertSame('home page', $subject->action());
     }
 }

@@ -19,35 +19,6 @@ class CacheableInstance implements CacheableObjectReference
     public function __construct(private object $subject)
     {
         $this->init();
-        // CacheableInstance est seulement un gestionnaire
-
-        // Il implemente CacheableObjectReference et utilise un Set de CacheableObjectReferences
-
-        // il nous faut créer un container spécialisé pour faciliter la gestion
-
-        /**
-         * Ce container devra être rempli de CacheableObjectReferences qui seront serialisés.
-         * On n'utilisera pas le jsonSerialize du Set. Il faudra sortir un tableau serialisé.
-         *
-         * à la deserialisation, il faudra reprendre le tableau et le refiler au conteneur pour le reconstruire.
-         * Il faudra aussi retenir le nom de la classe d'origine de l'instance.
-         */
-
-        // Il n'est ni Serializable ni JsonSerializable mais utilisera les outils de serialization Ad Hoc
-        // Mais NON ! CacheableInstance est justement celui que je veux encoder.
-        // Il peut utiliser les outils qu'il veut, le tout est d'arriver à construire le serial et à rétablir le CacheableInstance.
-        // CacheableInstance est un Cacheable qui contient des Cacheables.
-        // je pars déjà sur la mauvaise piste...
-
-        /**
-         * Il va me falloir construire un Set contenant des instances CacheableProperty.
-         *
-         * CacheableProperty contient le nomm de la propriété, son type et son contenu.
-         * Chacun d'entre eux est public readonly.
-         * Ou bien alors on lui donne directement le ReflectionProperty et il est capable de se démmerder...
-         * Non, je ne peux pas faire ça, il me faut accéder à l'instance visée. C'est un ValueObject qui contient des données
-         *
-         */
     }
 
     public function getName(): string
@@ -76,7 +47,7 @@ class CacheableInstance implements CacheableObjectReference
         }
     }
 
-    public function getProperties():Set
+    public function getProperties(): Set
     {
         return $this->references->list();
     }
@@ -93,21 +64,26 @@ class CacheableInstance implements CacheableObjectReference
     {
         /**
          * @var mixed $subject
-         * @var CacheableProperty[] $props
+         * @var CacheableObjectReference[] $props
          */
         [$subject, $props] = unserialize($serial);
         // var_dump(class_exists($subject));
         $reflection = new ReflectionClass($subject);
         // il faut voir si on a un constructeur?
         $this->subject = $reflection->newInstanceWithoutConstructor();
-
-        var_dump('props', $props);
-        foreach ($props as $cacheable) {
+        $this->references = $props;
+        // echo 'subject : '. $subject . PHP_EOL;
+        // var_dump('props', $props);
+        /** @var CacheableObjectReference $cacheable */
+        foreach ($this->references->list() as $cacheable) {
             // if(in_array($cacheable))
-            var_dump($cacheable);
+            $propName = $cacheable->getName();
+            if($reflection->hasProperty($propName))
+            {
+                $reflection->getProperty($propName)->setValue($this->subject, $cacheable->getValue());
+            }
         }
 
-        // var_dump($data);
     }
 
     public function getInstance(): object
@@ -115,7 +91,7 @@ class CacheableInstance implements CacheableObjectReference
         return $this->subject;
     }
 
-    private function reflection():ReflectionClass
+    private function reflection(): ReflectionClass
     {
         return new ReflectionClass($this->subject);
     }
