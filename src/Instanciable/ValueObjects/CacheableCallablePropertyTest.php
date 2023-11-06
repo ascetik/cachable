@@ -6,7 +6,7 @@ use Ascetik\Cacheable\Types\CacheableProperty;
 use Closure;
 use Opis\Closure\SerializableClosure;
 
-class CacheableClosureProperty extends CacheableProperty
+class CacheableCallableProperty extends CacheableProperty
 {
     public function __construct(string $name, private Closure $call)
     {

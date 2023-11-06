@@ -2,16 +2,16 @@
 
 namespace Ascetik\Cacheable\Test;
 
-use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableClosureProperty;
+use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCallableProperty;
 use PHPUnit\Framework\TestCase;
 
 class CacheableCallablePropertyTest extends TestCase
 {
-    private CacheableClosureProperty $property;
+    private CacheableCallableProperty $property;
 
     protected function setUp(): void
     {
-        $this->property = new CacheableClosureProperty('fn', fn() => 'hello');
+        $this->property = new CacheableCallableProperty('fn', fn() => 'hello');
     }
 
     public function testShouldRegisterCorrectData()
