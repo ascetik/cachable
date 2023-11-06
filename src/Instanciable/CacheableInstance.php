@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Instanciable;
 
+use Ascetik\Cacheable\Instanciable\DTO\CacheableObjectReferenceRegistry;
 use Ascetik\Cacheable\Types\CacheableObjectReference;
 use Ascetik\Cacheable\Types\CacheableProperty;
 use Ds\Set;
@@ -11,10 +12,13 @@ use ReflectionClass;
 
 class CacheableInstance implements CacheableObjectReference
 {
+
+    private CacheableObjectReferenceRegistry $references;
     // il nous faut un container.
     // il faut d'abord gérer la fabrication d'un CacheableObjectReference pour les objets
     public function __construct(private object $subject)
     {
+        $this->init();
         // CacheableInstance est seulement un gestionnaire
 
         // Il implemente CacheableObjectReference et utilise un Set de CacheableObjectReferences
@@ -46,28 +50,42 @@ class CacheableInstance implements CacheableObjectReference
          */
     }
 
-    public function data(): Set
+    public function getName(): string
     {
-        $props = new Set();
+        return $this->reflection()->getName();
+    }
+
+    public function getValue(): object
+    {
+        return $this->subject;
+    }
+
+    private function init(): void
+    {
+        $this->references = new CacheableObjectReferenceRegistry();
         $reflection = new ReflectionClass($this->subject);
-        foreach ($reflection->getProperties() as $property) {
+        $properties = $reflection->getProperties();
+
+        $this->references->assign(count($properties));
+        foreach ($properties as $property) {
             $cacheable = CacheableProperty::create(
                 $property->name,
                 $property->getValue($this->subject)
             );
-            $props->add($cacheable);
+            $this->references->push($cacheable);
         }
-        return $props;
     }
 
+    public function getProperties():Set
+    {
+        return $this->references->list();
+    }
 
     public function serialize(): string
     {
-        $reflection = new ReflectionClass($this->subject);
-        // echo $reflection->getName().PHP_EOL;
         return serialize([
             $this->subject::class,
-            $this->data()->toArray()
+            $this->references
         ]);
     }
 
@@ -95,5 +113,10 @@ class CacheableInstance implements CacheableObjectReference
     public function getInstance(): object
     {
         return $this->subject;
+    }
+
+    private function reflection():ReflectionClass
+    {
+        return new ReflectionClass($this->subject);
     }
 }
