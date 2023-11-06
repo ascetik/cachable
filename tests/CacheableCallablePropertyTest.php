@@ -3,6 +3,7 @@
 namespace Ascetik\Cacheable\Test;
 
 use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCallableProperty;
+use Closure;
 use PHPUnit\Framework\TestCase;
 
 class CacheableCallablePropertyTest extends TestCase
@@ -16,9 +17,9 @@ class CacheableCallablePropertyTest extends TestCase
 
     public function testShouldRegisterCorrectData()
     {
-        $this->assertSame('string', $this->property->getType());
-        $this->assertSame('name', $this->property->getName());
-        $this->assertSame('John', $this->property->getValue());
+        $this->assertSame(Closure::class, $this->property->getType());
+        $this->assertSame('fn', $this->property->getName());
+        $this->assertInstanceOf(Closure::class, $this->property->getValue());
        
     }
     public function testShouldSerializeAString()
@@ -31,9 +32,12 @@ class CacheableCallablePropertyTest extends TestCase
     {
         $serial = serialize($this->property);
         $extract = unserialize($serial);
-        $this->assertInstanceOf(CacheableCustomProperty::class,$extract);
-        $this->assertSame('name', $this->property->getName());
-        $this->assertSame('John', $this->property->getValue());
+        $this->assertInstanceOf(CacheableCallableProperty::class,$extract);
+        $this->assertSame('fn', $this->property->getName());
+        $func = $this->property->getValue();
+        $this->assertInstanceOf(Closure::class, $func);
+        $result = call_user_func($func);
+        $this->assertSame('hello', $result);
     }
 
 }
