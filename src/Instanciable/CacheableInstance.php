@@ -1,21 +1,34 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * This is part of the ascetik/cacheable package
+ *
+ * @package    Cacheable
+ * @category   Handler
+ * @license    https://opensource.org/license/mit/  MIT License
+ * @copyright  Copyright (c) 2023, Vidda
+ * @author     Vidda <vidda@ascetik.fr>
+ */
+
+ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Instanciable;
 
-use Ascetik\Cacheable\Instanciable\DTO\CacheableObjectReferenceRegistry;
+use Ascetik\Cacheable\Instanciable\DTO\CacheablePropertyRegistry;
 use Ascetik\Cacheable\Types\Cacheable;
 use Ascetik\Cacheable\Types\CacheableProperty;
 use Ds\Set;
 use ReflectionClass;
 
+/**
+ * Handle Serialization of an instance
+ *
+ * @version 1.0.0
+ */
 class CacheableInstance implements Cacheable
 {
+    private CacheablePropertyRegistry $references;
 
-    private CacheableObjectReferenceRegistry $references;
-    // il nous faut un container.
-    // il faut d'abord gérer la fabrication d'un CacheableObjectReference pour les objets
     public function __construct(private object $subject)
     {
         $this->init();
@@ -33,7 +46,7 @@ class CacheableInstance implements Cacheable
 
     private function init(): void
     {
-        $this->references = new CacheableObjectReferenceRegistry();
+        $this->references = new CacheablePropertyRegistry();
         $reflection = new ReflectionClass($this->subject);
         $properties = $reflection->getProperties();
 
@@ -67,16 +80,11 @@ class CacheableInstance implements Cacheable
          * @var CacheableProperty[] $props
          */
         [$subject, $props] = unserialize($serial);
-        // var_dump(class_exists($subject));
         $reflection = new ReflectionClass($subject);
-        // il faut voir si on a un constructeur?
         $this->subject = $reflection->newInstanceWithoutConstructor();
         $this->references = $props;
-        // echo 'subject : '. $subject . PHP_EOL;
-        // var_dump('props', $props);
         /** @var CacheableProperty $cacheable */
         foreach ($this->references->list() as $cacheable) {
-            // if(in_array($cacheable))
             $propName = $cacheable->getName();
             if($reflection->hasProperty($propName))
             {
