@@ -36,13 +36,15 @@ class CacheableObjectProperty extends CacheableProperty
 
     public function serialize()
     {
-        return [$this->name, new CacheableInstance($this->subject)];
+        $cacheableInstance = new CacheableInstance($this->subject);
+        return serialize([$this->name, $cacheableInstance]);
     }
 
     public function unserialize(string $data)
     {
         /** @var CacheableInstance $wrapper */
         [$this->name, $wrapper] = unserialize($data);
-        $this->subject = $wrapper->getInstance();
+        $this->subject = $wrapper->getInstance();;
+        
     }
 }
