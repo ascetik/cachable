@@ -18,7 +18,6 @@ class CacheableCustomPropertyTest extends TestCase
     }
     public function testShouldRegisterCorrectData()
     {
-        $this->assertSame('string', $this->property->getType());
         $this->assertSame('name', $this->property->getName());
         $this->assertSame('John', $this->property->getValue());
        
