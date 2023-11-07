@@ -43,7 +43,7 @@ class CacheableCallsTest extends TestCase
         $this->assertEquals('Hello John, you are 18 years old', $result2);
     }
 
-    public function testShouldSerializeAClassMethod()
+    public function testShouldHandleAClassMethod()
     {
         $string = 'test page';
         $mock = new ControllerMock($string);
@@ -55,7 +55,7 @@ class CacheableCallsTest extends TestCase
         $this->assertSame($string, $deserial->run());
     }
 
-    public function testShouldBeAbleToSerializeAnInvokableObject()
+    public function testShouldBeAbleToHandleAnInvokableObject()
     {
         $subject = new InvokableMock();
         $endPoint = new CacheableInvokable($subject);
@@ -66,7 +66,7 @@ class CacheableCallsTest extends TestCase
         $this->assertSame('Hello John', $deserial->run(['John']));
     }
 
-    public function testEndPointFactoryMethod()
+    public function testCacheableCallFactoryMethod()
     {
         $this->assertInstanceOf(CacheableClosure::class, CacheableCall::create(fn () => 'Hello'));
         $this->assertInstanceOf(CacheableMethod::class, CacheableCall::create([new ControllerMock('title'), 'action']));

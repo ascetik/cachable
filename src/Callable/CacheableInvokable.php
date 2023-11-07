@@ -14,14 +14,13 @@ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Callable;
 
+use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Types\CacheableCall;
-use JsonSerializable;
 
 /**
  * Handle and serialize an Invokable instance
  *
- * Missing serialization of a non-serializable instance
- * @version 0.1.0
+ * @version 1.0.0
  */
 class CacheableInvokable extends CacheableCall
 {
@@ -41,7 +40,8 @@ class CacheableInvokable extends CacheableCall
          * il faudrait scanner l'objet pour arriver à serializer le tout
          * Pour arriver à le deserializer après.
          */
-        return serialize($this->invokable);
+        $wrapper = new CacheableInstance($this->invokable);
+        return serialize($wrapper);
     }
 
     public function unserialize(string $data): void
@@ -60,6 +60,9 @@ class CacheableInvokable extends CacheableCall
              * Elle implémente Serializable et utilise
              * ReflectionClass pour retrouver tout xce qu'il lui faut.
              */
-            $this->invokable = unserialize($data);
+            /** @var CacheableInstance $wrapper */
+            $wrapper = unserialize($data);
+            // var_dump($wrapper);
+            $this->invokable = $wrapper->getInstance();
     }
 }
