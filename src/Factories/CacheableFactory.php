@@ -7,12 +7,14 @@ namespace Ascetik\Cacheable\Factories;
 use Ascetik\Cacheable\Callable\CacheableClosure;
 use Ascetik\Cacheable\Callable\CacheableInvokable;
 use Ascetik\Cacheable\Callable\CacheableMethod;
+use Ascetik\Cacheable\Instanciable\CacheableInstance;
+use Ascetik\Cacheable\Types\CacheableCall;
 use Closure;
 use InvalidArgumentException;
 
 class CacheableFactory
 {
-    public static function wrapCall(callable $callable)
+    public static function wrapCall(callable $callable): CacheableCall
     {
         if (is_array($callable)) {
             return CacheableMethod::build(...$callable);
@@ -28,7 +30,8 @@ class CacheableFactory
         throw new InvalidArgumentException('No use case matching with given parameters');
     }
 
-    public static function wrapInstance()
+    public static function wrapInstance(object $subject): CacheableInstance
     {
+        return new CacheableInstance($subject);
     }
 }
