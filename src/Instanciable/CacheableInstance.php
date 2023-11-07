@@ -10,7 +10,7 @@
  * @author     Vidda <vidda@ascetik.fr>
  */
 
- declare(strict_types=1);
+declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Instanciable;
 
@@ -18,7 +18,9 @@ use Ascetik\Cacheable\Factories\CacheableFactory;
 use Ascetik\Cacheable\Instanciable\DTO\CacheablePropertyRegistry;
 use Ascetik\Cacheable\Types\Cacheable;
 use Ascetik\Cacheable\Types\CacheableProperty;
+use BadMethodCallException;
 use Ds\Set;
+use OutOfBoundsException;
 use ReflectionClass;
 
 /**
@@ -33,6 +35,22 @@ class CacheableInstance implements Cacheable
     public function __construct(private object $subject)
     {
         $this->init();
+    }
+
+    public function __call($method, $arguments): mixed
+    {
+        if (!method_exists($this->subject, $method)) {
+            throw new BadMethodCallException('The "' . $method . '" method is not implemented.');
+        }
+        return call_user_func_array([$this->subject, $method], $arguments);
+    }
+
+    public function __get($name): mixed
+    {
+        if (!property_exists($this->subject, $name)) {
+            throw new OutOfBoundsException('The property "' . $name . '" does not exist.');
+        }
+        return $this->subject->{$name};
     }
 
     public function getClass(): string
@@ -71,12 +89,10 @@ class CacheableInstance implements Cacheable
         /** @var CacheableProperty $cacheable */
         foreach ($this->references->list() as $cacheable) {
             $propName = $cacheable->getName();
-            if($reflection->hasProperty($propName))
-            {
+            if ($reflection->hasProperty($propName)) {
                 $reflection->getProperty($propName)->setValue($this->subject, $cacheable->getValue());
             }
         }
-
     }
 
     private function init(): void
