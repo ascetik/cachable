@@ -22,7 +22,6 @@ use BadMethodCallException;
 use Ds\Set;
 use OutOfBoundsException;
 use ReflectionClass;
-use ReflectionProperty;
 
 /**
  * Handle Serialization of an instance

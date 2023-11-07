@@ -14,12 +14,6 @@ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Types;
 
-use Ascetik\Cacheable\Instanciable\CacheableInstance;
-use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCallableProperty;
-use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCustomProperty;
-use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableObjectProperty;
-use Closure;
-
 /**
  * Details the behavior of an instance
  * property and its value

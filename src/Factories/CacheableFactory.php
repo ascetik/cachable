@@ -33,6 +33,11 @@ use InvalidArgumentException;
  */
 class CacheableFactory
 {
+    /**
+     * @throws InvalidArgumentException
+     *
+     * @return CacheableCall
+     */
     public static function wrapCall(callable $callable): CacheableCall
     {
         if (is_array($callable)) {
@@ -62,5 +67,4 @@ class CacheableFactory
             default => new CacheableCustomProperty($name, $value)
         };
     }
-
 }
