@@ -18,7 +18,11 @@ use Ascetik\Cacheable\Callable\CacheableClosure;
 use Ascetik\Cacheable\Callable\CacheableInvokable;
 use Ascetik\Cacheable\Callable\CacheableMethod;
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
+use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCallableProperty;
+use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCustomProperty;
+use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableObjectProperty;
 use Ascetik\Cacheable\Types\CacheableCall;
+use Ascetik\Cacheable\Types\CacheableProperty;
 use Closure;
 use InvalidArgumentException;
 
@@ -29,6 +33,11 @@ use InvalidArgumentException;
  */
 class CacheableFactory
 {
+    /**
+     * @throws InvalidArgumentException
+     *
+     * @return CacheableCall
+     */
     public static function wrapCall(callable $callable): CacheableCall
     {
         if (is_array($callable)) {
@@ -48,5 +57,14 @@ class CacheableFactory
     public static function wrapInstance(object $subject): CacheableInstance
     {
         return new CacheableInstance($subject);
+    }
+
+    public static function wrapProperty(string $name, mixed $value): CacheableProperty
+    {
+        return match (true) {
+            $value instanceof Closure => new CacheableCallableProperty($name, $value),
+            is_object($value) => new CacheableObjectProperty($name, $value),
+            default => new CacheableCustomProperty($name, $value)
+        };
     }
 }

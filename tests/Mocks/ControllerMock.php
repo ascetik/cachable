@@ -6,12 +6,14 @@ namespace Ascetik\Cacheable\Test\Mocks;
 
 class ControllerMock
 {
-    public function __construct(private string $title)
+    private string $unreacheable = 'restricted';
+    
+    public function __construct(public readonly string $title)
     {
         
     }
     public function action()
     {
-        return $this->title;
+        return 'page title : '.$this->title;
     }
 }

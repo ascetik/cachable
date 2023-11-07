@@ -7,39 +7,93 @@ namespace Ascetik\Cacheable\Test;
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Instanciable\ValueObjects\CacheableCustomProperty;
 use Ascetik\Cacheable\Test\Mocks\ControllerMock;
+use BadMethodCallException;
+use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 
 class CacheableInstanceTest extends TestCase
 {
+    private CacheableInstance $wrapper;
+
+    protected function setUp(): void
+    {
+        $this->wrapper = new CacheableInstance(new ControllerMock('home page'));
+    }
+
     public function testInstanciationOfCacheableInstance()
     {
-        $wrapper = new CacheableInstance(new ControllerMock('home page'));
-        $this->assertSame(ControllerMock::class, $wrapper->getName());
-        $data = $wrapper->getProperties();
-        $this->assertCount(1, $data);
+        $this->assertSame(ControllerMock::class, $this->wrapper->getClass());
+        $data = $this->wrapper->getProperties();
+        $this->assertCount(2, $data);
         /** @var CacheableCustomProperty $first */
-        $first = $data->first();
-        $this->assertInstanceOf(CacheableCustomProperty::class, $first);
-        $this->assertSame($first->getName(), 'title');
-        $this->assertSame('home page', $first->getValue());
+        $last = $data->last();
+        $this->assertInstanceOf(CacheableCustomProperty::class, $last);
+        $this->assertSame($last->getName(), 'title');
+        $this->assertSame('home page', $last->getValue());
     }
 
     public function testSerializationOfACacheableInstance()
     {
-        $wrapper = new CacheableInstance(new ControllerMock('home page'));
-        $serial = serialize($wrapper);
+        $serial = serialize($this->wrapper);
         $this->assertIsString($serial);
     }
 
     public function testUnserializationOfACacheableInstance()
     {
-        $wrapper = new CacheableInstance(new ControllerMock('home page'));
-        $serial = serialize($wrapper);
+        $serial = serialize($this->wrapper);
         /** @var CacheableInstance $extract */
         $extract = unserialize($serial);
         $this->assertInstanceOf(CacheableInstance::class, $extract);
         $subject = $extract->getInstance();
         $this->assertInstanceOf(ControllerMock::class, $subject);
-        $this->assertSame('home page', $subject->action());
+        $this->assertSame('page title : home page', $subject->action());
     }
+
+    public function testCallMagicMethod()
+    {
+        $serial = serialize($this->wrapper);
+        /** @var CacheableInstance $extract */
+        $extract = unserialize($serial);
+        $this->assertSame('page title : home page', $extract->action());
+    }
+
+    public function testGetMagicMethod()
+    {
+        $serial = serialize($this->wrapper);
+        /** @var CacheableInstance $extract */
+        $extract = unserialize($serial);
+        $this->assertSame('home page', $extract->title);
+    }
+
+    public function testShouldThrowExceptionOnUnimplementedMethod()
+    {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('The "whatEver" method is not implemented.');
+        $serial = serialize($this->wrapper);
+        /** @var CacheableInstance $extract */
+        $extract = unserialize($serial);
+        $extract->whatEver();
+    }
+
+    public function testShouldThrowExceptionOnUnexistingProperty()
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('The property "whatEver" does not exist.');
+        $serial = serialize($this->wrapper);
+        /** @var CacheableInstance $extract */
+        $extract = unserialize($serial);
+        $extract->whatEver;
+    }
+
+    public function testShouldThrowExceptionOnPrivateProperty()
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('The property "unreacheable" is out of scope.');
+        $serial = serialize($this->wrapper);
+        /** @var CacheableInstance $extract */
+        $extract = unserialize($serial);
+        $extract->unreacheable;
+    }
+
+
 }

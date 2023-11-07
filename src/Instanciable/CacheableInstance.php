@@ -10,14 +10,17 @@
  * @author     Vidda <vidda@ascetik.fr>
  */
 
- declare(strict_types=1);
+declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Instanciable;
 
+use Ascetik\Cacheable\Factories\CacheableFactory;
 use Ascetik\Cacheable\Instanciable\DTO\CacheablePropertyRegistry;
 use Ascetik\Cacheable\Types\Cacheable;
 use Ascetik\Cacheable\Types\CacheableProperty;
+use BadMethodCallException;
 use Ds\Set;
+use OutOfBoundsException;
 use ReflectionClass;
 
 /**
@@ -34,35 +37,41 @@ class CacheableInstance implements Cacheable
         $this->init();
     }
 
-    public function getName(): string
+    public function __call($method, $arguments): mixed
     {
-        return $this->reflection()->getName();
-    }
-
-    public function getValue(): object
-    {
-        return $this->subject;
-    }
-
-    private function init(): void
-    {
-        $this->references = new CacheablePropertyRegistry();
-        $reflection = new ReflectionClass($this->subject);
-        $properties = $reflection->getProperties();
-
-        $this->references->assign(count($properties));
-        foreach ($properties as $property) {
-            $cacheable = CacheableProperty::create(
-                $property->name,
-                $property->getValue($this->subject)
-            );
-            $this->references->push($cacheable);
+        if (!method_exists($this->subject, $method)) {
+            throw new BadMethodCallException('The "' . $method . '" method is not implemented.');
         }
+        return call_user_func_array([$this->subject, $method], $arguments);
+    }
+
+    public function __get($name): mixed
+    {
+        $reflection = new ReflectionClass($this->subject);
+        if(!$reflection->hasProperty($name)){
+            throw new OutOfBoundsException('The property "' . $name . '" does not exist.');
+        }
+
+        $property = $reflection->getProperty($name);
+        if(!$property->isPublic()){
+            throw new OutOfBoundsException('The property "' . $name . '" is out of scope.');
+        }
+        return $property->getValue($this->subject);
+    }
+
+    public function getClass(): string
+    {
+        return $this->subject::class;
     }
 
     public function getProperties(): Set
     {
         return $this->references->list();
+    }
+
+    public function getInstance(): object
+    {
+        return $this->subject;
     }
 
     public function serialize(): string
@@ -76,7 +85,7 @@ class CacheableInstance implements Cacheable
     public function unserialize(string $serial): void
     {
         /**
-         * @var mixed $subject
+         * @var class-string $subject
          * @var CacheableProperty[] $props
          */
         [$subject, $props] = unserialize($serial);
@@ -86,21 +95,25 @@ class CacheableInstance implements Cacheable
         /** @var CacheableProperty $cacheable */
         foreach ($this->references->list() as $cacheable) {
             $propName = $cacheable->getName();
-            if($reflection->hasProperty($propName))
-            {
+            if ($reflection->hasProperty($propName)) {
                 $reflection->getProperty($propName)->setValue($this->subject, $cacheable->getValue());
             }
         }
-
     }
 
-    public function getInstance(): object
+    private function init(): void
     {
-        return $this->subject;
-    }
+        $this->references = new CacheablePropertyRegistry();
+        $reflection = new ReflectionClass($this->subject);
+        $properties = $reflection->getProperties();
 
-    private function reflection(): ReflectionClass
-    {
-        return new ReflectionClass($this->subject);
+        $this->references->assign(count($properties));
+        foreach ($properties as $property) {
+            $cacheable = CacheableFactory::wrapProperty(
+                $property->name,
+                $property->getValue($this->subject)
+            );
+            $this->references->push($cacheable);
+        }
     }
 }
