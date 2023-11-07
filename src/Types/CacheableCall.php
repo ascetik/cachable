@@ -29,9 +29,9 @@ use Serializable;
  */
 abstract class CacheableCall implements Cacheable
 {
-    public function run(array $parameters = []): mixed
+    public function run(iterable $parameters = []): mixed
     {
-        return call_user_func_array($this->callable(), $parameters);
+        return call_user_func_array($this->callable(), iterator_to_array($parameters));
     }
 
     abstract public function callable(): callable;
