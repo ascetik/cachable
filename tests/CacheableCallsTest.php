@@ -8,6 +8,7 @@ use Ascetik\Cacheable\Callable\CacheableClosure;
 use Ascetik\Cacheable\Callable\CacheableInvokable;
 use Ascetik\Cacheable\Callable\CacheableMethod;
 use Ascetik\Cacheable\Test\Mocks\ControllerMock;
+use Ascetik\Cacheable\Test\Mocks\FactoryMock;
 use Ascetik\Cacheable\Test\Mocks\InvokableMock;
 use Ascetik\Cacheable\Types\CacheableCall;
 use PHPUnit\Framework\TestCase;
@@ -43,16 +44,29 @@ class CacheableCallsTest extends TestCase
         $this->assertEquals('Hello John, you are 18 years old', $result2);
     }
 
-    public function testShouldHandleAClassMethod()
+    public function testShouldHandleAnInstanceMethod()
     {
         $string = 'test page';
         $mock = new ControllerMock($string);
-        $endPoint = CacheableMethod::build([$mock, 'action']);
+        $endPoint = CacheableMethod::build($mock, 'action');
         $serial = serialize($endPoint);
         $this->assertIsString($serial);
         $deserial = unserialize($serial);
         $this->assertInstanceOf(ControllerMock::class, $deserial->subject);
         $this->assertSame($string, $deserial->run());
+    }
+
+    public function testShouldHandleAStaticMethod()
+    {
+        $wrapper = CacheableMethod::build(FactoryMock::class, 'create');
+        $serial = serialize($wrapper);
+        $this->assertIsString($serial);
+        /** @var CacheableMethod $extract */
+        $extract = unserialize($serial);
+        $this->assertInstanceOf(CacheableMethod::class, $extract);
+        $this->assertSame(FactoryMock::class, $extract->subject);
+        $this->assertSame('create', $extract->method);
+        $this->assertSame('new Mock created for serialize tests', $extract->run(['serialize tests']));
     }
 
     public function testShouldBeAbleToHandleAnInvokableObject()
