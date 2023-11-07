@@ -66,14 +66,8 @@ class CacheableMethod extends CacheableCall
      *
      * @return self
      */
-    public static function build(array $callable): self
+    public static function build(string|object $subject, string $method): self
     {
-        if (count($callable) != 2) {
-            throw new InvalidArgumentException('Wrong parameters number');
-        }
-
-        [$subject, $method] = $callable;
-
         if (is_string($subject) && !class_exists($subject)) {
             throw new InvalidArgumentException('Class ' . $subject . ' not found');
         }
