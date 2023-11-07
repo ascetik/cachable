@@ -34,30 +34,9 @@ class CacheableInstance implements Cacheable
         $this->init();
     }
 
-    public function getName(): string
+    public function getClass(): string
     {
-        return $this->reflection()->getName();
-    }
-
-    public function getValue(): object
-    {
-        return $this->subject;
-    }
-
-    private function init(): void
-    {
-        $this->references = new CacheablePropertyRegistry();
-        $reflection = new ReflectionClass($this->subject);
-        $properties = $reflection->getProperties();
-
-        $this->references->assign(count($properties));
-        foreach ($properties as $property) {
-            $cacheable = CacheableProperty::create(
-                $property->name,
-                $property->getValue($this->subject)
-            );
-            $this->references->push($cacheable);
-        }
+        return $this->subject::class;
     }
 
     public function getProperties(): Set
@@ -99,8 +78,19 @@ class CacheableInstance implements Cacheable
         return $this->subject;
     }
 
-    private function reflection(): ReflectionClass
+    private function init(): void
     {
-        return new ReflectionClass($this->subject);
+        $this->references = new CacheablePropertyRegistry();
+        $reflection = new ReflectionClass($this->subject);
+        $properties = $reflection->getProperties();
+
+        $this->references->assign(count($properties));
+        foreach ($properties as $property) {
+            $cacheable = CacheableProperty::create(
+                $property->name,
+                $property->getValue($this->subject)
+            );
+            $this->references->push($cacheable);
+        }
     }
 }
