@@ -138,5 +138,10 @@ When using wrapper magic methods, Exceptions are thrown if :
 
 ## Finalities
 
-So now, i have to test if a cached router system is more efficient than the traditionnal implementation which load all routes all the times.
-My Krono package will certainly be useful.
+This package provides serialization and unserialization.
+The usage of the output is up to you.
+
+## Next features
+
+For now, the are no more features in prevision until conclusion of usage in production.
+
