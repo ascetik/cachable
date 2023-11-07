@@ -1,10 +1,10 @@
-# Cachable
+# Cacheable
 
 Convert Closures and objects to strings.
 
 ## Release notes
 
-> v0.1.0 (draft)
+> v0.1.1 (draft)
 
 - serialize/unserialize functions, class/instance methods, invokable instances
 - serialize/unserialize instances
