@@ -1,0 +1,29 @@
+{
+    "name": "ascetik/cacheable",
+    "description": "Convert Closures and objects into strings",
+    "type": "library",
+    "require": {
+        "opis/closure": "^3.6",
+        "php-ds/php-ds": "^1.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.4"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Ascetik\\Cacheable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ascetik\\Cacheable\\Test\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ascetik",
+            "email": "ascetik@free.fr"
+        }
+    ]
+}

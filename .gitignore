@@ -1,0 +1,4 @@
+/vendor/
+/think/
+*.cache
+test.php
