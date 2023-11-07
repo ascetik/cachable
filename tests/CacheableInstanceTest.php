@@ -14,7 +14,7 @@ class CacheableInstanceTest extends TestCase
     public function testInstanciationOfCacheableInstance()
     {
         $wrapper = new CacheableInstance(new ControllerMock('home page'));
-        $this->assertSame(ControllerMock::class, $wrapper->getName());
+        $this->assertSame(ControllerMock::class, $wrapper->getClass());
         $data = $wrapper->getProperties();
         $this->assertCount(1, $data);
         /** @var CacheableCustomProperty $first */
