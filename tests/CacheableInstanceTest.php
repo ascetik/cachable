@@ -11,11 +11,17 @@ use PHPUnit\Framework\TestCase;
 
 class CacheableInstanceTest extends TestCase
 {
+    private CacheableInstance $wrapper;
+
+    protected function setUp(): void
+    {
+        $this->wrapper = new CacheableInstance(new ControllerMock('home page'));
+    }
+
     public function testInstanciationOfCacheableInstance()
     {
-        $wrapper = new CacheableInstance(new ControllerMock('home page'));
-        $this->assertSame(ControllerMock::class, $wrapper->getClass());
-        $data = $wrapper->getProperties();
+        $this->assertSame(ControllerMock::class, $this->wrapper->getClass());
+        $data = $this->wrapper->getProperties();
         $this->assertCount(1, $data);
         /** @var CacheableCustomProperty $first */
         $first = $data->first();
@@ -26,20 +32,34 @@ class CacheableInstanceTest extends TestCase
 
     public function testSerializationOfACacheableInstance()
     {
-        $wrapper = new CacheableInstance(new ControllerMock('home page'));
-        $serial = serialize($wrapper);
+        $serial = serialize($this->wrapper);
         $this->assertIsString($serial);
     }
 
     public function testUnserializationOfACacheableInstance()
     {
-        $wrapper = new CacheableInstance(new ControllerMock('home page'));
-        $serial = serialize($wrapper);
+        $serial = serialize($this->wrapper);
         /** @var CacheableInstance $extract */
         $extract = unserialize($serial);
         $this->assertInstanceOf(CacheableInstance::class, $extract);
         $subject = $extract->getInstance();
         $this->assertInstanceOf(ControllerMock::class, $subject);
-        $this->assertSame('home page', $subject->action());
+        $this->assertSame('page title : home page', $subject->action());
+    }
+
+    public function testCallMagicMethod()
+    {
+        $serial = serialize($this->wrapper);
+        /** @var CacheableInstance $extract */
+        $extract = unserialize($serial);
+        $this->assertSame('page title : home page', $extract->action());
+    }
+
+    public function testGetMagicMethod()
+    {
+        $serial = serialize($this->wrapper);
+        /** @var CacheableInstance $extract */
+        $extract = unserialize($serial);
+        $this->assertSame('home page', $extract->title);
     }
 }

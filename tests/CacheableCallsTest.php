@@ -42,8 +42,8 @@ class CacheableCallsTest extends TestCase
         $this->assertIsString($serial);
         $deserial = unserialize($serial);
         $this->assertInstanceOf(ControllerMock::class, $deserial->subject);
-        $this->assertSame($string, $deserial->run());
-        $this->assertSame($string, $deserial());
+        $this->assertSame('page title : '.$string, $deserial->run());
+        $this->assertSame('page title : '.$string, $deserial());
     }
 
     public function testShouldHandleAStaticMethod()
