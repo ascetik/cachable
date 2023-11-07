@@ -43,6 +43,7 @@ class CacheableCallsTest extends TestCase
         $deserial = unserialize($serial);
         $this->assertInstanceOf(ControllerMock::class, $deserial->subject);
         $this->assertSame($string, $deserial->run());
+        $this->assertSame($string, $deserial());
     }
 
     public function testShouldHandleAStaticMethod()
@@ -55,7 +56,7 @@ class CacheableCallsTest extends TestCase
         $this->assertInstanceOf(CacheableMethod::class, $extract);
         $this->assertSame(FactoryMock::class, $extract->subject);
         $this->assertSame('create', $extract->method);
-        $this->assertSame('new Mock created for serialize tests', $extract->run(['serialize tests']));
+        $this->assertSame('new Mock created for serialize tests', $extract(['serialize tests']));
     }
 
     public function testShouldBeAbleToHandleAnInvokableObject()
