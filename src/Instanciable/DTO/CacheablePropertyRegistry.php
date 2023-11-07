@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Ascetik\Cacheable\Instanciable\DTO;
 
 use Ascetik\Cacheable\Types\Cacheable;
-use Ascetik\Cacheable\Types\CacheableObjectReference;
 use Ascetik\Cacheable\Types\CacheableProperty;
 use Ds\Set;
 
