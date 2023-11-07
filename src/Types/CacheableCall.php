@@ -39,7 +39,7 @@ abstract class CacheableCall implements Cacheable
     final public static function create(callable $callable): CacheableCall
     {
         if (is_array($callable)) {
-            return CacheableMethod::build($callable);
+            return CacheableMethod::build(...$callable);
         }
 
         if ($callable instanceof Closure) {
