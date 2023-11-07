@@ -25,7 +25,6 @@ class CacheableObjectPropertyTest extends TestCase
     public function testShouldSerializeAString()
     {
         $serial = serialize($this->property);
-        echo $serial . PHP_EOL;
         $this->assertIsString($serial);
     }
 
