@@ -14,6 +14,7 @@
 
 namespace Ascetik\Cacheable\Instanciable;
 
+use Ascetik\Cacheable\Factories\CacheableFactory;
 use Ascetik\Cacheable\Instanciable\DTO\CacheablePropertyRegistry;
 use Ascetik\Cacheable\Types\Cacheable;
 use Ascetik\Cacheable\Types\CacheableProperty;
@@ -44,6 +45,11 @@ class CacheableInstance implements Cacheable
         return $this->references->list();
     }
 
+    public function getInstance(): object
+    {
+        return $this->subject;
+    }
+
     public function serialize(): string
     {
         return serialize([
@@ -55,7 +61,7 @@ class CacheableInstance implements Cacheable
     public function unserialize(string $serial): void
     {
         /**
-         * @var mixed $subject
+         * @var class-string $subject
          * @var CacheableProperty[] $props
          */
         [$subject, $props] = unserialize($serial);
@@ -73,11 +79,6 @@ class CacheableInstance implements Cacheable
 
     }
 
-    public function getInstance(): object
-    {
-        return $this->subject;
-    }
-
     private function init(): void
     {
         $this->references = new CacheablePropertyRegistry();
@@ -86,7 +87,7 @@ class CacheableInstance implements Cacheable
 
         $this->references->assign(count($properties));
         foreach ($properties as $property) {
-            $cacheable = CacheableProperty::create(
+            $cacheable = CacheableFactory::wrapProperty(
                 $property->name,
                 $property->getValue($this->subject)
             );
