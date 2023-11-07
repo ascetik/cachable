@@ -15,18 +15,6 @@ use PHPUnit\Framework\TestCase;
 
 class CacheableCallsTest extends TestCase
 {
-    /**
-     * Ces test devriendront bientot obsolète.
-     * Ce n'est pas au package du Router de s'occuper de cache.
-     * C'est le FrameWork, avec son fonctionnement interne, qui devra mettre en cache
-     * la RoadMap à sa manière en utilisant un autre package pour le cache et celui du Cachable à venir
-     * Le package Cachable-core contiendra les abstractions pricipales. J'aimerais bien faire tout ça en JSON...
-     * Le package cachable-closure se spécialisera dans les CLosures
-     * Le package cachable-instance se spécialisera dans la mise en cache d'objets, Serializable ou non
-     * Le package cachable-method pourrait utiliser un CachableInstance
-     * Le package cachable-invoke pourrait utiliser un CachableInstance
-     * à voir...
-     */
     public function testShouldSerializeAClosure()
     {
         $func = function (string $name, int $age) {
@@ -36,6 +24,7 @@ class CacheableCallsTest extends TestCase
         $endPoint = new CacheableClosure($func);
         $serial = serialize($endPoint);
         $this->assertIsString($serial);
+        /** @var CacheableCall $deserial */
         $deserial = unserialize($serial);
         $this->assertInstanceOf(CacheableClosure::class, $deserial);
         $result1 = $deserial->run(['Mike', 20]);
