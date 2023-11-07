@@ -8,6 +8,7 @@ use Ascetik\Cacheable\Callable\CacheableClosure;
 use Ascetik\Cacheable\Callable\CacheableInvokable;
 use Ascetik\Cacheable\Callable\CacheableMethod;
 use Ascetik\Cacheable\Test\Mocks\ControllerMock;
+use Ascetik\Cacheable\Test\Mocks\FactoryMock;
 use Ascetik\Cacheable\Test\Mocks\InvokableMock;
 use Ascetik\Cacheable\Types\CacheableCall;
 use PHPUnit\Framework\TestCase;
@@ -43,11 +44,11 @@ class CacheableCallsTest extends TestCase
         $this->assertEquals('Hello John, you are 18 years old', $result2);
     }
 
-    public function testShouldSerializeAClassMethod()
+    public function testShouldHandleAnInstanceMethod()
     {
         $string = 'test page';
         $mock = new ControllerMock($string);
-        $endPoint = CacheableMethod::build([$mock, 'action']);
+        $endPoint = CacheableMethod::build($mock, 'action');
         $serial = serialize($endPoint);
         $this->assertIsString($serial);
         $deserial = unserialize($serial);
@@ -55,7 +56,20 @@ class CacheableCallsTest extends TestCase
         $this->assertSame($string, $deserial->run());
     }
 
-    public function testShouldBeAbleToSerializeAnInvokableObject()
+    public function testShouldHandleAStaticMethod()
+    {
+        $wrapper = CacheableMethod::build(FactoryMock::class, 'create');
+        $serial = serialize($wrapper);
+        $this->assertIsString($serial);
+        /** @var CacheableMethod $extract */
+        $extract = unserialize($serial);
+        $this->assertInstanceOf(CacheableMethod::class, $extract);
+        $this->assertSame(FactoryMock::class, $extract->subject);
+        $this->assertSame('create', $extract->method);
+        $this->assertSame('new Mock created for serialize tests', $extract->run(['serialize tests']));
+    }
+
+    public function testShouldBeAbleToHandleAnInvokableObject()
     {
         $subject = new InvokableMock();
         $endPoint = new CacheableInvokable($subject);
@@ -66,7 +80,7 @@ class CacheableCallsTest extends TestCase
         $this->assertSame('Hello John', $deserial->run(['John']));
     }
 
-    public function testEndPointFactoryMethod()
+    public function testCacheableCallFactoryMethod()
     {
         $this->assertInstanceOf(CacheableClosure::class, CacheableCall::create(fn () => 'Hello'));
         $this->assertInstanceOf(CacheableMethod::class, CacheableCall::create([new ControllerMock('title'), 'action']));

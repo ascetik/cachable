@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Callable;
 
+use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Types\CacheableCall;
 use InvalidArgumentException;
 
@@ -37,12 +38,21 @@ class CacheableMethod extends CacheableCall
 
     public function serialize(): string
     {
-        return serialize($this->callable());
+        if (is_string($this->subject)) {
+            return serialize($this->callable());
+        }
+
+        $wrapper = new CacheableInstance($this->subject);
+        return serialize([$wrapper, $this->method]);
     }
 
     public function unserialize(string $data): void
     {
-        [$this->subject, $this->method] = unserialize($data);
+        [$subject, $method] = unserialize($data);
+        $this->subject = $subject instanceof CacheableInstance
+            ? $subject->getInstance()
+            : $subject;
+        $this->method = $method;
     }
 
 
@@ -56,14 +66,8 @@ class CacheableMethod extends CacheableCall
      *
      * @return self
      */
-    public static function build(array $callable): self
+    public static function build(string|object $subject, string $method): self
     {
-        if (count($callable) != 2) {
-            throw new InvalidArgumentException('Wrong parameters number');
-        }
-
-        [$subject, $method] = $callable;
-
         if (is_string($subject) && !class_exists($subject)) {
             throw new InvalidArgumentException('Class ' . $subject . ' not found');
         }
