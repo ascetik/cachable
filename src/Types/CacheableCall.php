@@ -14,13 +14,6 @@ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Types;
 
-use Ascetik\Cacheable\Callable\CacheableClosure;
-use Ascetik\Cacheable\Callable\CacheableInvokable;
-use Ascetik\Cacheable\Callable\CacheableMethod;
-use Closure;
-use InvalidArgumentException;
-use Serializable;
-
 /**
  * Main abstraction to handle callable serialization
  *
@@ -29,6 +22,11 @@ use Serializable;
  */
 abstract class CacheableCall implements Cacheable
 {
+    public function __invoke(iterable $parameters = []): mixed
+    {
+        return $this->run($parameters);
+    }
+
     public function run(iterable $parameters = []): mixed
     {
         return call_user_func_array($this->callable(), iterator_to_array($parameters));
