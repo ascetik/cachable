@@ -22,6 +22,7 @@ use BadMethodCallException;
 use Ds\Set;
 use OutOfBoundsException;
 use ReflectionClass;
+use ReflectionProperty;
 
 /**
  * Handle Serialization of an instance
@@ -47,10 +48,16 @@ class CacheableInstance implements Cacheable
 
     public function __get($name): mixed
     {
-        if (!property_exists($this->subject, $name)) {
+        $reflection = new ReflectionClass($this->subject);
+        if(!$reflection->hasProperty($name)){
             throw new OutOfBoundsException('The property "' . $name . '" does not exist.');
         }
-        return $this->subject->{$name};
+
+        $property = $reflection->getProperty($name);
+        if(!$property->isPublic()){
+            throw new OutOfBoundsException('The property "' . $name . '" is out of scope.');
+        }
+        return $property->getValue($this->subject);
     }
 
     public function getClass(): string

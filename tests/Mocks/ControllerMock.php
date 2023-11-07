@@ -6,6 +6,8 @@ namespace Ascetik\Cacheable\Test\Mocks;
 
 class ControllerMock
 {
+    private string $unreacheable = 'restricted';
+    
     public function __construct(public readonly string $title)
     {
         
