@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ascetik\Cacheable\Factories;
 
 use Ascetik\Cacheable\Callable\CacheableClosure;
@@ -24,11 +26,9 @@ class CacheableFactory
             return new CacheableInvokable($callable);
         }
         throw new InvalidArgumentException('No use case matching with given parameters');
-
     }
 
     public static function wrapInstance()
     {
-        
     }
 }

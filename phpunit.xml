@@ -14,6 +14,7 @@
             <file>tests/CacheableObjectPropertyTest.php</file>
             <file>tests/CacheablePropertyRegistryTest.php</file>
             <file>tests/CacheableInstanceTest.php</file>
+            <file>tests/CacheableFactoryTest.php</file>
         </testsuite>
     </testsuites>
     <php>
