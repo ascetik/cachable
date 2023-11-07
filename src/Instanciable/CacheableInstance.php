@@ -1,120 +1,106 @@
 <?php
 
+/**
+ * This is part of the ascetik/cacheable package
+ *
+ * @package    Cacheable
+ * @category   Handler
+ * @license    https://opensource.org/license/mit/  MIT License
+ * @copyright  Copyright (c) 2023, Vidda
+ * @author     Vidda <vidda@ascetik.fr>
+ */
+
+ declare(strict_types=1);
+
 namespace Ascetik\Cacheable\Instanciable;
 
+use Ascetik\Cacheable\Instanciable\DTO\CacheablePropertyRegistry;
 use Ascetik\Cacheable\Types\Cacheable;
+use Ascetik\Cacheable\Types\CacheableProperty;
+use Ds\Set;
 use ReflectionClass;
 
+/**
+ * Handle Serialization of an instance
+ *
+ * @version 1.0.0
+ */
 class CacheableInstance implements Cacheable
 {
+    private CacheablePropertyRegistry $references;
+
     public function __construct(private object $subject)
     {
-        // CacheableInstance est seulement un gestionnaire
-
-        // Il n'implemente pas Cacheable mais utilise des Cacheables
-
-        // Il n'est ni Serializable ni JsonSerializable mais utilisera les outils de serialization Ad Hoc
-        // Mais NON ! CacheableInstance est justement celui que je veux encoder.
-        // Il peut utiliser les outils qu'il veut, le tout est d'arriver à construire le serial et à rétablir le CacheableInstance.
-        // CacheableInstance est un Cacheable qui contient des Cacheables.
-        // je pars déjà sur la mauvaise piste...
-
-        /**
-         * Il va me falloir construire un Set contenant des instances CacheableProperty.
-         *
-         * CacheableProperty contient le nomm de la propriété, son type et son contenu.
-         * Chacun d'entre eux est public readonly.
-         * Ou bien alors on lui donne directement le ReflectionProperty et il est capable de se démmerder...
-         * Non, je ne peux pas faire ça, il me faut accéder à l'instance visée. C'est un ValueObject qui contient des données
-         *
-         * @return array
-         */
+        $this->init();
     }
 
-    public function data(): array
+    public function getName(): string
     {
-        return [
-            'subject' => $this->subject::class,
-            'serial' => $this->stringify()
-        ];
+        return $this->reflection()->getName();
     }
 
-    private function stringify()
+    public function getValue(): object
     {
+        return $this->subject;
+    }
+
+    private function init(): void
+    {
+        $this->references = new CacheablePropertyRegistry();
         $reflection = new ReflectionClass($this->subject);
-        foreach($reflection->getProperties() as $property){
-            // il faut tester le type
+        $properties = $reflection->getProperties();
 
-            // si c'est un string, int, float, bool, array ou Serializable, on le met dans un CacheableScalar (Cacheable)
-
-            // si c'est une Closure, on a déjà un CacheableClosure dont on retourne le encode
+        $this->references->assign(count($properties));
+        foreach ($properties as $property) {
+            $cacheable = CacheableProperty::create(
+                $property->name,
+                $property->getValue($this->subject)
+            );
+            $this->references->push($cacheable);
         }
     }
 
-    public function encode(): string
+    public function getProperties(): Set
     {
-        $reflection = new ReflectionClass($this->subject);
-        foreach($reflection->getProperties() as $property){
-            $name = $property->name;
-            $type = $property->getType();
-            $content = $property->getValue($this->subject);
-            // il faut tester le type
-
-            // si c'est un string, int, float, bool, array ou Serializable, on le met dans un CacheableScalar (Cacheable)
-
-            // si c'est une Closure, on a déjà un CacheableClosure dont on retourne le encode
-        }
-        /**
-         * C'est là qu'on va avoir la magie de la serialization
-         *
-         * Les props natives sont :
-         * - string
-         * - int
-         * - float
-         * - bool
-         * - array
-         * - Serializable
-         * - JsonSerializable
-         *
-         * Si les props ne contiennet que des types comme ceux-là, on serialize directement l'objet.
-         *
-         * Si on tombe sur :
-         * - Closure
-         * - objet qui n'est pas serializable
-         *
-         * on serialize ces trucs.
-         * Pour les CLosures, on sait déjà faire.
-         * Pour un objet non serializable, il faudra une autre instance de CacheableInstance.
-         *
-         * Soyons clair dans le fonctionnement de la serialization :
-         * On serialize un objet qui va contenir un tableau associatif ou même un Set (JsonSerailizable).
-         * Les valeurs seront des objets eux-mêmes serializables à leur manière (serial, json...)
-         * qui contiendront :
-         * - le nom de la props
-         * - le fqcn du type
-         * - les données contenues par cet objet au moment de la serialization, elles -même serialisées.
-         *
-         * C'est par reflection que l'on pourra obtenir les données
-         * et rétablir les instances. Elles n'auront pas la même référence en mémoire mais on s'en fout.
-         * L'important est de pouvoir restaurer rapidement des services, des routes et des machins comme ça,
-         * sans trop charger la mule bien entendu. On ne stockera que des petites choses.
-         */
-        $test = '';
-        // Il faut déjà vérifier les types des propriétés
-
-        // on doit faire un match avec tous les types.
-
-        // les données de type scalaire sont directement encodées telles quelles.
-
-        // les autres passent par un wrapper pour contenir le serial ad hoc
-
-        // types scalaires et wrapper passent à la moulinette pour etre encodées dans un Set,
-        // en json, du coup... On verra les petites subtilités mais on va tâcher de se servir de json s'il est dispo
-        // meme en serialization. De toutes façons, notre wrapper contient tout ce qu'il faut !
-        return '';
+        return $this->references->list();
     }
 
-    public function decode(string $serial): void
+    public function serialize(): string
     {
+        return serialize([
+            $this->subject::class,
+            $this->references
+        ]);
+    }
+
+    public function unserialize(string $serial): void
+    {
+        /**
+         * @var mixed $subject
+         * @var CacheableProperty[] $props
+         */
+        [$subject, $props] = unserialize($serial);
+        $reflection = new ReflectionClass($subject);
+        $this->subject = $reflection->newInstanceWithoutConstructor();
+        $this->references = $props;
+        /** @var CacheableProperty $cacheable */
+        foreach ($this->references->list() as $cacheable) {
+            $propName = $cacheable->getName();
+            if($reflection->hasProperty($propName))
+            {
+                $reflection->getProperty($propName)->setValue($this->subject, $cacheable->getValue());
+            }
+        }
+
+    }
+
+    public function getInstance(): object
+    {
+        return $this->subject;
+    }
+
+    private function reflection(): ReflectionClass
+    {
+        return new ReflectionClass($this->subject);
     }
 }
