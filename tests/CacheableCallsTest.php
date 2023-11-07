@@ -79,11 +79,4 @@ class CacheableCallsTest extends TestCase
         $this->assertInstanceOf(InvokableMock::class, $deserial->invokable);
         $this->assertSame('Hello John', $deserial->run(['John']));
     }
-
-    public function testCacheableCallFactoryMethod()
-    {
-        $this->assertInstanceOf(CacheableClosure::class, CacheableCall::create(fn () => 'Hello'));
-        $this->assertInstanceOf(CacheableMethod::class, CacheableCall::create([new ControllerMock('title'), 'action']));
-        $this->assertInstanceOf(CacheableInvokable::class, CacheableCall::create(new InvokableMock()));
-    }
 }

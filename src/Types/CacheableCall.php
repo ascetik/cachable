@@ -36,19 +36,4 @@ abstract class CacheableCall implements Cacheable
 
     abstract public function callable(): callable;
 
-    final public static function create(callable $callable): CacheableCall
-    {
-        if (is_array($callable)) {
-            return CacheableMethod::build(...$callable);
-        }
-
-        if ($callable instanceof Closure) {
-            return new CacheableClosure($callable);
-        }
-
-        if (is_object($callable) && method_exists($callable, '__invoke')) {
-            return new CacheableInvokable($callable);
-        }
-        throw new InvalidArgumentException('No use case matching with given parameters');
-    }
 }
