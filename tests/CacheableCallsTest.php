@@ -66,7 +66,7 @@ class CacheableCallsTest extends TestCase
         $serial = serialize($endPoint);
         $this->assertIsString($serial);
         $deserial = unserialize($serial);
-        $this->assertInstanceOf(InvokableMock::class, $deserial->invokable);
+        $this->assertInstanceOf(InvokableMock::class, $deserial->callable());
         $this->assertSame('Hello John', $deserial->run(['John']));
     }
 }
