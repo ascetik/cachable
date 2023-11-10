@@ -4,8 +4,48 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1baf220bb4682c6dc034bbce3b72918a",
+    "content-hash": "b2c003d1f066e8cca890b8c97f4fcec3",
     "packages": [
+        {
+            "name": "ascetik/callapsule",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ascetik/callapsule.git",
+                "reference": "58fbe9cdde5101c8c4fa7e0e70c49dd160db3dd4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ascetik/callapsule/zipball/58fbe9cdde5101c8c4fa7e0e70c49dd160db3dd4",
+                "reference": "58fbe9cdde5101c8c4fa7e0e70c49dd160db3dd4",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ascetik\\Callabubble\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ascetik",
+                    "email": "ascetik@free.fr"
+                }
+            ],
+            "description": "A way to encapsulate callables",
+            "support": {
+                "issues": "https://github.com/ascetik/callapsule/issues",
+                "source": "https://github.com/ascetik/callapsule/tree/v0.1.1"
+            },
+            "time": "2023-11-10T18:07:51+00:00"
+        },
         {
             "name": "opis/closure",
             "version": "3.6.3",
