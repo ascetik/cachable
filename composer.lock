@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59fb6c12a46135d2d7a31d70e71a3fe4",
+    "content-hash": "74bec7609313a4701e561d1c1677e873",
     "packages": [
         {
             "name": "ascetik/callapsule",
-            "version": "v0.2.0",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ascetik/callapsule.git",
-                "reference": "26f24a0bf98c1bb5c23c1f289dc0bd9c65ce0c1f"
+                "reference": "367fbadb64d09ae03fd08703eed109a415c5b375"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ascetik/callapsule/zipball/26f24a0bf98c1bb5c23c1f289dc0bd9c65ce0c1f",
-                "reference": "26f24a0bf98c1bb5c23c1f289dc0bd9c65ce0c1f",
+                "url": "https://api.github.com/repos/ascetik/callapsule/zipball/367fbadb64d09ae03fd08703eed109a415c5b375",
+                "reference": "367fbadb64d09ae03fd08703eed109a415c5b375",
                 "shasum": ""
             },
             "require-dev": {
@@ -26,7 +26,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Ascetik\\Callabubble\\": "src/"
+                    "Ascetik\\Callapsule\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -42,9 +42,9 @@
             "description": "A way to encapsulate callables",
             "support": {
                 "issues": "https://github.com/ascetik/callapsule/issues",
-                "source": "https://github.com/ascetik/callapsule/tree/v0.2.0"
+                "source": "https://github.com/ascetik/callapsule/tree/v0.3.0"
             },
-            "time": "2023-11-10T19:02:21+00:00"
+            "time": "2023-11-10T19:31:42+00:00"
         },
         {
             "name": "opis/closure",

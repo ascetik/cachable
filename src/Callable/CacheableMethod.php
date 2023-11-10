@@ -16,6 +16,7 @@ namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Types\CacheableCall;
+use Ascetik\Callabubble\Values\MethodCall;
 use InvalidArgumentException;
 
 /**
@@ -25,6 +26,7 @@ use InvalidArgumentException;
  */
 class CacheableMethod extends CacheableCall
 {
+    private MethodCall
     private function __construct(
         public readonly object|string $subject,
         public readonly string $method
