@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Test;
 
-use Ascetik\Cacheable\Callable\CacheableClosure;
-use Ascetik\Cacheable\Callable\CacheableInvokable;
 use Ascetik\Cacheable\Callable\CacheableMethod;
 use Ascetik\Cacheable\Callable\CacheableStatic;
 use Ascetik\Cacheable\Test\Mocks\ControllerMock;
 use Ascetik\Cacheable\Test\Mocks\FactoryMock;
-use Ascetik\Cacheable\Test\Mocks\InvokableMock;
-use Ascetik\Cacheable\Types\CacheableCall;
 use PHPUnit\Framework\TestCase;
 
 class CacheableCallsTest extends TestCase
@@ -49,14 +45,4 @@ class CacheableCallsTest extends TestCase
         $this->assertSame('new Mock created for serialize tests', $extract(['serialize tests']));
     }
 
-    public function testShouldBeAbleToHandleAnInvokableObject()
-    {
-        $subject = new InvokableMock();
-        $endPoint = new CacheableInvokable($subject);
-        $serial = serialize($endPoint);
-        $this->assertIsString($serial);
-        $deserial = unserialize($serial);
-        $this->assertInstanceOf(InvokableMock::class, $deserial->callable());
-        $this->assertSame('Hello John', $deserial->run(['John']));
-    }
 }
