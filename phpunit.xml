@@ -8,7 +8,6 @@
 >
     <testsuites>
         <testsuite name="Storage Tests">
-            <!-- <directory>tests</directory> -->
             <file>tests/CacheableClosureTest.php</file>
             <file>tests/CacheableInvokableTest.php</file>
             <file>tests/CacheableMethodTest.php</file>
