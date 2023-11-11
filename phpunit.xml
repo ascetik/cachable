@@ -8,13 +8,14 @@
 >
     <testsuites>
         <testsuite name="Storage Tests">
-            <file>tests/CacheableCallsTest.php</file>
+            <directory>tests</directory>
+            <!-- <file>tests/CacheableCallsTest.php</file>
             <file>tests/CacheableCustomPropertyTest.php</file>
             <file>tests/CacheableCallablePropertyTest.php</file>
             <file>tests/CacheableObjectPropertyTest.php</file>
             <file>tests/CacheablePropertyRegistryTest.php</file>
             <file>tests/CacheableInstanceTest.php</file>
-            <file>tests/CacheableFactoryTest.php</file>
+            <file>tests/CacheableFactoryTest.php</file> -->
         </testsuite>
     </testsuites>
     <php>
