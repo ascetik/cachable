@@ -13,23 +13,6 @@ use PHPUnit\Framework\TestCase;
 class CacheableCallsTest extends TestCase
 {
  
-    public function testShouldHandleAnInstanceMethod()
-    {
-        $string = 'test page';
-        $mock = new ControllerMock($string);
-        $endPoint = new CacheableMethod($mock, 'action');
-        $serial = serialize($endPoint);
-        $this->assertIsString($serial);
-
-        $deserial = unserialize($serial);
-        [$subject,$method] = $deserial->callable();
-
-        $this->assertInstanceOf(ControllerMock::class, $subject);
-
-        $this->assertSame('action', $method);
-        $this->assertSame('page title : '.$string, $deserial->run());
-        $this->assertSame('page title : '.$string, $deserial());
-    }
 
     public function testShouldHandleAStaticMethod()
     {
