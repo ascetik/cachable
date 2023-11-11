@@ -36,7 +36,7 @@ class CacheableStaticTest extends TestCase
         $serial = serialize($this->cacheable);
         /** @var CacheableStatic $extract */
         $extract = unserialize($serial);
-        [$subject, $method] = $extract->callable();
+        [$subject, $method] = $extract->action();
         $this->assertSame(FactoryMock::class, $subject);
         $this->assertSame('create', $method);
         $this->assertSame('new Mock created for serialize tests', $extract(['serialize tests']));

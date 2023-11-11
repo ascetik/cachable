@@ -24,8 +24,6 @@ use Ascetik\Callapsule\Types\CallableType;
  */
 abstract class CacheableCall extends CallableType implements Cacheable
 {
-    protected CallableType $wrapper;
-
     public function __invoke(iterable $parameters = []): mixed
     {
         return $this->apply($parameters);
@@ -33,17 +31,19 @@ abstract class CacheableCall extends CallableType implements Cacheable
 
     public function apply(iterable $parameters = []): mixed
     {
-        return $this->wrapper->apply($parameters);
+        return $this->getWrapper()->apply($parameters);
     }
 
 
     public function action(): callable
     {
-        return $this->wrapper->action();
+        return $this->getWrapper()->action();
     }
 
     public function getCallable(): object
     {
-        return $this->wrapper->getCallable();
+        return $this->getWrapper()->getCallable();
     }
+
+    abstract protected function getWrapper():CallableType;
 }

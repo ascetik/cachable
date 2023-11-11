@@ -16,6 +16,7 @@ namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Types\CacheableCall;
+use Ascetik\Callapsule\Types\CallableType;
 use Ascetik\Callapsule\Values\InvokableCall;
 
 /**
@@ -25,21 +26,16 @@ use Ascetik\Callapsule\Values\InvokableCall;
  */
 class CacheableInvokable extends CacheableCall
 {
-    private InvokableCall $call;
+    private InvokableCall $invokable;
 
     public function __construct(object $invokable)
     {
         $this->buildWrapper($invokable);
     }
 
-    public function callable(): callable
-    {
-        return $this->call->action();
-    }
-
     public function serialize(): string
     {
-        $wrapper = new CacheableInstance($this->call->getCallable());
+        $wrapper = new CacheableInstance($this->invokable->getCallable());
         return serialize($wrapper);
     }
 
@@ -51,8 +47,13 @@ class CacheableInvokable extends CacheableCall
         $this->buildWrapper($invokable);
     }
 
+    protected function getWrapper(): CallableType
+    {
+        return $this->invokable;
+    }
+    
     private function buildWrapper(object $invokable)
     {
-        $this->call = InvokableCall::build($invokable);
+        $this->invokable = InvokableCall::build($invokable);
     }
 }

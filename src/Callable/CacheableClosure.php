@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Types\CacheableCall;
+use Ascetik\Callapsule\Types\CallableType;
 use Ascetik\Callapsule\Values\ClosureCall;
 use Closure;
 use Opis\Closure\SerializableClosure;
@@ -27,6 +28,8 @@ use Opis\Closure\SerializableClosure;
  */
 class CacheableClosure extends CacheableCall
 {
+    protected ClosureCall $closure;
+
     public function __construct(Closure $callable)
     {
         $this->buildWrapper($callable);
@@ -34,7 +37,7 @@ class CacheableClosure extends CacheableCall
 
     public function serialize(): string
     {
-        $wrapper = new SerializableClosure($this->wrapper->getCallable());
+        $wrapper = new SerializableClosure($this->closure->getCallable());
         return serialize($wrapper);
     }
 
@@ -44,8 +47,13 @@ class CacheableClosure extends CacheableCall
         $this->buildWrapper($deserial->getClosure());
     }
 
+    protected function getWrapper(): CallableType
+    {
+        return $this->closure;
+    }
+
     private function buildWrapper(Closure $callable): void
     {
-        $this->wrapper = new ClosureCall($callable);
+        $this->closure = new ClosureCall($callable);
     }
 }
