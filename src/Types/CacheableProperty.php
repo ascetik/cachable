@@ -33,5 +33,4 @@ abstract class CacheableProperty implements Cacheable
     }
 
     abstract public function getValue(): mixed;
-
 }

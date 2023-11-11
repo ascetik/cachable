@@ -8,7 +8,10 @@
 >
     <testsuites>
         <testsuite name="Storage Tests">
-            <file>tests/CacheableCallsTest.php</file>
+            <file>tests/CacheableClosureTest.php</file>
+            <file>tests/CacheableInvokableTest.php</file>
+            <file>tests/CacheableMethodTest.php</file>
+            <file>tests/CacheableStaticTest.php</file>
             <file>tests/CacheableCustomPropertyTest.php</file>
             <file>tests/CacheableCallablePropertyTest.php</file>
             <file>tests/CacheableObjectPropertyTest.php</file>

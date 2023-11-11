@@ -41,7 +41,7 @@ class CacheableFactory
     public static function wrapCall(callable $callable): CacheableCall
     {
         if (is_array($callable)) {
-            return CacheableMethod::build(...$callable);
+            return new CacheableMethod(...$callable);
         }
 
         if ($callable instanceof Closure) {
