@@ -34,7 +34,6 @@ abstract class CacheableCall extends CallableType implements Cacheable
         return $this->getWrapper()->apply($parameters);
     }
 
-
     public function action(): callable
     {
         return $this->getWrapper()->action();

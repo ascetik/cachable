@@ -16,7 +16,6 @@ namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Types\CacheableCall;
-use Ascetik\Callapsule\Types\CallableType;
 use Ascetik\Callapsule\Values\MethodCall;
 
 /**
@@ -54,6 +53,7 @@ class CacheableMethod extends CacheableCall
     {
         return $this->wrapper;
     }
+
     private function buildInstanceWrapper(object $instance, string $method)
     {
         $this->wrapper = MethodCall::build($instance, $method);
