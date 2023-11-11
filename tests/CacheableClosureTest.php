@@ -41,12 +41,12 @@ class CacheableClosureTest extends TestCase
 
         $this->assertEquals(
             'Hello Mike, you are 20 years old',
-            $deserial->run(['Mike', 20])
+            $deserial->apply(['Mike', 20])
         );
 
         $this->assertEquals(
             'Hello John, you are 18 years old',
-            $deserial->run(['age' => 18, 'name' => 'John'])
+            $deserial->apply(['age' => 18, 'name' => 'John'])
         );
     }
 }

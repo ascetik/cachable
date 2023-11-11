@@ -16,6 +16,7 @@ namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Types\CacheableCall;
+use Ascetik\Callapsule\Types\CallableType;
 use Ascetik\Callapsule\Values\MethodCall;
 
 /**
@@ -25,7 +26,7 @@ use Ascetik\Callapsule\Values\MethodCall;
  */
 class CacheableMethod extends CacheableCall
 {
-    private MethodCall $wrapper;
+    protected MethodCall $wrapper;
 
     public function __construct(
         object $subject,
@@ -33,11 +34,6 @@ class CacheableMethod extends CacheableCall
     ) {
         $this->buildInstanceWrapper($subject, $method);
         $this->wrapper = MethodCall::build($subject, $method);
-    }
-
-    public function callable(): callable
-    {
-        return $this->wrapper->getCallable()->get();
     }
 
     public function serialize(): string
@@ -54,6 +50,10 @@ class CacheableMethod extends CacheableCall
         $this->buildInstanceWrapper($subject->getInstance(), $method);
     }
 
+    protected function getWrapper(): MethodCall
+    {
+        return $this->wrapper;
+    }
     private function buildInstanceWrapper(object $instance, string $method)
     {
         $this->wrapper = MethodCall::build($instance, $method);

@@ -26,15 +26,15 @@ class CacheableInvokableTest extends TestCase
     {
         $serial = serialize($this->cacheable);
         $deserial = unserialize($serial);
-        $this->assertInstanceOf(InvokableMock::class, $deserial->callable());
-        $this->assertSame('Hello John', $deserial->run(['John']));
+        $this->assertInstanceOf(InvokableMock::class, $deserial->action());
+        $this->assertSame('Hello John', $deserial->apply(['John']));
     }
 
     public function testShouldReturnWrappedInstanceExpectedResult()
     {
         $serial = serialize($this->cacheable);
         $deserial = unserialize($serial);
-        $this->assertSame('Hello John', $deserial->run(['John']));
+        $this->assertSame('Hello John', $deserial->apply(['John']));
     }
 
     public function testShouldThrownExceptionOnUninvokableInstance()

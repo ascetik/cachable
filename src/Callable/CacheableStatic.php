@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Types\CacheableCall;
+use Ascetik\Callapsule\Types\CallableType;
 use Ascetik\Callapsule\Values\StaticCall;
 
 class CacheableStatic extends CacheableCall
@@ -28,11 +29,6 @@ class CacheableStatic extends CacheableCall
         $this->buildWrapper($className, $method);
     }
 
-    public function callable(): callable
-    {
-        return $this->wrapper->action();
-    }
-
     public function serialize()
     {
         return serialize($this->wrapper->getCallable()->get());
@@ -43,6 +39,11 @@ class CacheableStatic extends CacheableCall
         $this->buildWrapper(...unserialize($serial));
     }
 
+    protected function getWrapper(): CallableType
+    {
+        return $this->wrapper;
+    }
+    
     private function buildWrapper(string $className, string $method)
     {
         $this->wrapper = StaticCall::build($className, $method);

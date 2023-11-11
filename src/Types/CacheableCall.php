@@ -14,24 +14,36 @@ declare(strict_types=1);
 
 namespace Ascetik\Cacheable\Types;
 
+use Ascetik\Callapsule\Types\CallableType;
+
 /**
  * Main abstraction to handle callable serialization
  *
  * @abstract
  * @version 1.0.0
  */
-abstract class CacheableCall implements Cacheable
+abstract class CacheableCall extends CallableType implements Cacheable
 {
     public function __invoke(iterable $parameters = []): mixed
     {
-        return $this->run($parameters);
+        return $this->apply($parameters);
     }
 
-    public function run(iterable $parameters = []): mixed
+    public function apply(iterable $parameters = []): mixed
     {
-        return call_user_func_array($this->callable(), iterator_to_array($parameters));
+        return $this->getWrapper()->apply($parameters);
     }
 
-    abstract public function callable(): callable;
 
+    public function action(): callable
+    {
+        return $this->getWrapper()->action();
+    }
+
+    public function getCallable(): object
+    {
+        return $this->getWrapper()->getCallable();
+    }
+
+    abstract protected function getWrapper():CallableType;
 }

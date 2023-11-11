@@ -1,14 +1,15 @@
 # Cacheable
 
-Convert Closures and objects to strings.
+Convert Closures and objects to strings in order to
+provide callable caching
+
 
 ## Release notes
 
-> v0.1.1 (draft)
+> v1.0.0 :
 
-- serialize/unserialize functions, class/instance methods, invokable instances
-- serialize/unserialize instances
-- Factory available to build Cacheable element.
+- Breaking change : **CacheableCall** now extends **CallableType** from *ascetik/callapsule* package. Methods have been updated to match with required behavior.
+- **CacheableCall** decorates a **CallableType**.
 
 ## Purpose
 
@@ -39,8 +40,8 @@ Self-made logger package is still not done.
 
 ### CacheableCall
 
-- callable(): **callable**     : Returns registered callable as is
-- run(**iterable**): **mixed** : Calls registered callable
+- action(): **callable**     : Returns registered callable as is
+- apply(**iterable**): **mixed** : Calls registered callable
 
 > **CacheableCall** is invokable to keep it simple to use on runtime
 
@@ -107,7 +108,7 @@ And unserialization is easy too :
 
 $serial = goAndFindInCache('something-satisfying-my-needs'); // file, external service, SQL, noSQL, hyper-speed keyboard typing world champion...
 $wrapper = unserialize($serial);
-echo $wrapper->run(['John']); // prints 'Closure : hello John'
+echo $wrapper->apply(['John']); // prints 'Closure : hello John'
 // A CacheableCall is invokable
 echo $wrapper(['John']); // same result
 
@@ -141,7 +142,4 @@ When using wrapper magic methods, Exceptions are thrown if :
 This package provides serialization and unserialization.
 The usage of the output is up to you.
 
-## Next features
-
-For now, the are no more features in prevision until conclusion of usage in production.
 
