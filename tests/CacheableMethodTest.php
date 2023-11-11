@@ -28,7 +28,7 @@ class CacheableMethodTest extends TestCase
         $serial = serialize($this->cacheable);
 
         $deserial = unserialize($serial);
-        [$subject, ] = $deserial->callable();
+        [$subject, ] = $deserial->action();
 
         $this->assertInstanceOf(ControllerMock::class, $subject);
     }
@@ -38,10 +38,10 @@ class CacheableMethodTest extends TestCase
         $serial = serialize($this->cacheable);
 
         $deserial = unserialize($serial);
-        [, $method] = $deserial->callable();
+        [, $method] = $deserial->action();
 
         $this->assertSame('action', $method);
-        $this->assertSame('page title : ' . self::STRING, $deserial->run());
+        $this->assertSame('page title : ' . self::STRING, $deserial->apply());
         $this->assertSame('page title : ' . self::STRING, $deserial());
     }
 

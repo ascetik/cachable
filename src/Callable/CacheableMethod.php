@@ -25,19 +25,12 @@ use Ascetik\Callapsule\Values\MethodCall;
  */
 class CacheableMethod extends CacheableCall
 {
-    private MethodCall $wrapper;
-
     public function __construct(
         object $subject,
         string $method
     ) {
         $this->buildInstanceWrapper($subject, $method);
         $this->wrapper = MethodCall::build($subject, $method);
-    }
-
-    public function callable(): callable
-    {
-        return $this->wrapper->getCallable()->get();
     }
 
     public function serialize(): string
