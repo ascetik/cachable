@@ -16,7 +16,7 @@ namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Types\CacheableCall;
-use Ascetik\Callabubble\Values\InvokableCall;
+use Ascetik\Callapsule\Values\InvokableCall;
 
 /**
  * Handle and serialize an Invokable instance

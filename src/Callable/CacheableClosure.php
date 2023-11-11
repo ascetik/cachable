@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Types\CacheableCall;
-use Ascetik\Callabubble\Values\ClosureCall;
+use Ascetik\Callapsule\Values\ClosureCall;
 use Closure;
 use Opis\Closure\SerializableClosure;
 

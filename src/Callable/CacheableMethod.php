@@ -16,8 +16,8 @@ namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Types\CacheableCall;
-use Ascetik\Callabubble\Values\MethodCall;
-use InvalidArgumentException;
+use Ascetik\Callapsule\Exceptions\MethodNotImplementedException;
+use Ascetik\Callapsule\Values\MethodCall;
 
 /**
  * Handle and serialize a class/instance method
@@ -26,37 +26,52 @@ use InvalidArgumentException;
  */
 class CacheableMethod extends CacheableCall
 {
-    private MethodCall
+    private MethodCall $wrapper;
+
     private function __construct(
-        public readonly object|string $subject,
-        public readonly string $method
+        object $subject,
+        string $method
     ) {
+        $this->buildInstanceWrapper($subject, $method);
+        $this->wrapper = MethodCall::build($subject, $method);
     }
 
     public function callable(): callable
     {
-        return [$this->subject, $this->method];
+        return $this->wrapper->getCallable()->get();
     }
 
     public function serialize(): string
     {
-        if (is_string($this->subject)) {
-            return serialize($this->callable());
-        }
+        [$subject, $method] = $this->wrapper->getCallable()->get();
+        $wrapper = new CacheableInstance($subject);
+        return serialize([$wrapper, $method]);
 
-        $wrapper = new CacheableInstance($this->subject);
-        return serialize([$wrapper, $this->method]);
+
+
+        // if (is_string($this->subject)) {
+        //     return serialize($this->callable());
+        // }
+
+        // $wrapper = new CacheableInstance($this->subject);
+        // return serialize([$wrapper, $this->method]);
     }
 
     public function unserialize(string $data): void
     {
+        /** @var CacheableInstance $subject */
         [$subject, $method] = unserialize($data);
-        $this->subject = $subject instanceof CacheableInstance
-            ? $subject->getInstance()
-            : $subject;
-        $this->method = $method;
+        $this->buildInstanceWrapper($subject->getInstance(), $method);
+        // $this->subject = $subject instanceof CacheableInstance
+        //     ? $subject->getInstance()
+        //     : $subject;
+        // $this->method = $method;
     }
 
+    private function buildInstanceWrapper(object $instance, string $method)
+    {
+        $this->wrapper = MethodCall::build($instance, $method);
+    }
 
     /**
      * Factory method
@@ -64,17 +79,17 @@ class CacheableMethod extends CacheableCall
      * @param  object|string $subject
      * @param  string        $method
      *
-     * @throws InvalidArgumentException
+     * @throws MethodNotImplementedException
      *
      * @return self
      */
-    public static function build(string|object $subject, string $method): self
+    public static function build(object $subject, string $method): self
     {
-        if (is_string($subject) && !class_exists($subject)) {
-            throw new InvalidArgumentException('Class ' . $subject . ' not found');
-        }
+        // if (is_string($subject) && !class_exists($subject)) {
+        //     throw new InvalidArgumentException('Class ' . $subject . ' not found');
+        // }
         if (!method_exists($subject, $method)) {
-            throw new InvalidArgumentException('Method ' . $method . ' not implemented');
+            throw new MethodNotImplementedException('Method ' . $method . ' not implemented');
         }
         return new self($subject, $method);
     }
