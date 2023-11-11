@@ -16,7 +16,6 @@ namespace Ascetik\Cacheable\Callable;
 
 use Ascetik\Cacheable\Instanciable\CacheableInstance;
 use Ascetik\Cacheable\Types\CacheableCall;
-use Ascetik\Callapsule\Exceptions\MethodNotImplementedException;
 use Ascetik\Callapsule\Values\MethodCall;
 
 /**
