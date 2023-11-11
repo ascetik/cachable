@@ -27,16 +27,9 @@ use Opis\Closure\SerializableClosure;
  */
 class CacheableClosure extends CacheableCall
 {
-    private ClosureCall $wrapper;
-
     public function __construct(Closure $callable)
     {
         $this->buildWrapper($callable);
-    }
-
-    public function callable(): callable
-    {
-        return $this->wrapper->action();
     }
 
     public function serialize(): string
@@ -51,7 +44,7 @@ class CacheableClosure extends CacheableCall
         $this->buildWrapper($deserial->getClosure());
     }
 
-    private function buildWrapper(Closure $callable)
+    private function buildWrapper(Closure $callable): void
     {
         $this->wrapper = new ClosureCall($callable);
     }
