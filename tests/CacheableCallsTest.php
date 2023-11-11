@@ -38,7 +38,7 @@ class CacheableCallsTest extends TestCase
     {
         $string = 'test page';
         $mock = new ControllerMock($string);
-        $endPoint = CacheableMethod::build($mock, 'action');
+        $endPoint = new CacheableMethod($mock, 'action');
         $serial = serialize($endPoint);
         $this->assertIsString($serial);
 

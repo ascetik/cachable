@@ -28,7 +28,7 @@ class CacheableMethod extends CacheableCall
 {
     private MethodCall $wrapper;
 
-    private function __construct(
+    public function __construct(
         object $subject,
         string $method
     ) {
@@ -46,15 +46,6 @@ class CacheableMethod extends CacheableCall
         [$subject, $method] = $this->wrapper->getCallable()->get();
         $wrapper = new CacheableInstance($subject);
         return serialize([$wrapper, $method]);
-
-
-
-        // if (is_string($this->subject)) {
-        //     return serialize($this->callable());
-        // }
-
-        // $wrapper = new CacheableInstance($this->subject);
-        // return serialize([$wrapper, $this->method]);
     }
 
     public function unserialize(string $data): void
@@ -62,35 +53,10 @@ class CacheableMethod extends CacheableCall
         /** @var CacheableInstance $subject */
         [$subject, $method] = unserialize($data);
         $this->buildInstanceWrapper($subject->getInstance(), $method);
-        // $this->subject = $subject instanceof CacheableInstance
-        //     ? $subject->getInstance()
-        //     : $subject;
-        // $this->method = $method;
     }
 
     private function buildInstanceWrapper(object $instance, string $method)
     {
         $this->wrapper = MethodCall::build($instance, $method);
-    }
-
-    /**
-     * Factory method
-     *
-     * @param  object|string $subject
-     * @param  string        $method
-     *
-     * @throws MethodNotImplementedException
-     *
-     * @return self
-     */
-    public static function build(object $subject, string $method): self
-    {
-        // if (is_string($subject) && !class_exists($subject)) {
-        //     throw new InvalidArgumentException('Class ' . $subject . ' not found');
-        // }
-        if (!method_exists($subject, $method)) {
-            throw new MethodNotImplementedException('Method ' . $method . ' not implemented');
-        }
-        return new self($subject, $method);
     }
 }
