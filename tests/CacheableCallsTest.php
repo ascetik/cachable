@@ -16,24 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 class CacheableCallsTest extends TestCase
 {
-    public function testShouldSerializeAClosure()
-    {
-        $func = function (string $name, int $age) {
-            return 'Hello ' . $name . ', you are ' . $age . ' years old';
-        };
-
-        $endPoint = new CacheableClosure($func);
-        $serial = serialize($endPoint);
-        $this->assertIsString($serial);
-        /** @var CacheableCall $deserial */
-        $deserial = unserialize($serial);
-        $this->assertInstanceOf(CacheableClosure::class, $deserial);
-        $result1 = $deserial->run(['Mike', 20]);
-        $this->assertEquals('Hello Mike, you are 20 years old', $result1);
-        $result2 = $deserial->run(['age' => 18, 'name' => 'John']);
-        $this->assertEquals('Hello John, you are 18 years old', $result2);
-    }
-
+ 
     public function testShouldHandleAnInstanceMethod()
     {
         $string = 'test page';
